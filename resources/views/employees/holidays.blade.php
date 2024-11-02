@@ -33,8 +33,10 @@
                             <thead>
                                 <tr>
                                     <th>No</th>
+                                    <th hidden>id</th>
                                     <th>Title </th>
                                     <th>Holiday Date</th>
+                                    <th hidden></th>
                                     <th>Day</th>
                                     <th class="text-right">Action</th>
                                 </tr>
