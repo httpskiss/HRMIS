@@ -254,7 +254,7 @@ class UserManagementController extends Controller
             $information->save();
             
             DB::commit();
-            flash()->success('Profile Information successfully :)');
+            flash()->success('Add Profile Information successfully :)');
             return redirect()->back();
         }catch(\Exception $e){
             DB::rollback();
