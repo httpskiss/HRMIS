@@ -52,39 +52,13 @@ class LeavesController extends Controller
         }
     }
 
-    /** Save Record Leave */
+    /** Apply Leave */
     public function saveRecordLeave(Request $request)
     {
-        $request->validate([
-            'leave_type' => 'required|string',
-            'date_from'  => 'required',
-            'date_to'    => 'required',
-            'reason'     => 'required',
-        ]);
-
-        try {
-            
-            $save  = new Leave;
-            $save->staff_id         = Session::get('user_id');
-            $save->employee_name    = Session::get('name');
-            $save->leave_type       = $request->leave_type;
-            $save->remaining_leave  = $request->remaining_leave;
-            $save->date_from        = $request->date_from;
-            $save->date_to          = $request->date_to;
-            $save->number_of_day    = $request->number_of_day;
-            $save->leave_date       = json_encode($request->leave_date);
-            $save->leave_day        = json_encode($request->select_leave_day);
-            $save->status           = 'Pending';
-            $save->reason           = $request->reason;
-            $save->save();
-    
-            flash()->success('Apply Leave successfully :)');
-            return redirect()->back();
-        } catch (\Exception $e) {
-            \Log::error($e); // Log the error
-            flash()->error('Failed Apply Leave :)');
-            return redirect()->back();
-        }
+        // Create an instance of the Leave model
+        $leave = new Leave();
+        // Call the applyLeave method
+        return $leave->applyLeave($request);
     }
 
     /** Edit Record */
