@@ -147,13 +147,13 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form action="" method="POST">
+                        <form action="{{ route('form/leaves/save') }}" method="POST">
                             @csrf
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Leave Type <span class="text-danger">*</span></label>
-                                        <select class="select" id="leave_type">
+                                        <select class="select" id="leave_type" name="leave_type">
                                             <option selected disabled>Select Leave Type</option>
                                             <option value="Medical Leave">Medical Leave</option>
                                             <option value="Casual Leave">Casual Leave</option>
@@ -165,7 +165,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Remaining Leaves <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control" id="remaining_leave" readonly value="0">
+                                        <input type="text" class="form-control" id="remaining_leave" name="remaining_leave" readonly value="0">
                                     </div>
                                 </div>
                             </div>
@@ -175,7 +175,7 @@
                                     <div class="form-group">
                                         <label>From <span class="text-danger">*</span></label>
                                         <div class="cal-icon">
-                                            <input type="text" class="form-control datetimepicker-cus" id="date_from" name="">
+                                            <input type="text" class="form-control datetimepicker-cus" id="date_from" name="date_from">
                                         </div>
                                     </div>
                                 </div>
@@ -183,7 +183,7 @@
                                     <div class="form-group">
                                         <label>To <span class="text-danger">*</span></label>
                                         <div class="cal-icon">
-                                            <input type="text" class="form-control datetimepicker-cus" id="date_to" name="">
+                                            <input type="text" class="form-control datetimepicker-cus" id="date_to" name="date_to">
                                         </div>
                                     </div>
                                 </div>
@@ -213,13 +213,12 @@
 
                             <div class="form-group">
                                 <label>Leave Reason <span class="text-danger">*</span></label>
-                                <textarea rows="2" class="form-control" name="leave_reason"></textarea>
+                                <textarea rows="2" class="form-control" name="reason"></textarea>
                             </div>
                            
                             <div class="submit-section">
-                                <button class="btn btn-primary submit-btn">Submit</button>
+                                <button type="submit" class="btn btn-primary submit-btn">Submit</button>
                             </div>
-                            
                         </form>
                     </div>
                 </div>

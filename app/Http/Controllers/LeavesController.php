@@ -52,34 +52,37 @@ class LeavesController extends Controller
         }
     }
 
-    /** Save Record */
-    public function saveRecord(Request $request)
+    /** Save Record Leave */
+    public function saveRecordLeave(Request $request)
     {
         $request->validate([
-            'leave_type'   => 'required|string|max:255',
-            'from_date'    => 'required|string|max:255',
-            'to_date'      => 'required|string|max:255',
-            'leave_reason' => 'required|string|max:255',
+            'leave_type' => 'required|string',
+            'date_from'  => 'required',
+            'date_to'    => 'required',
+            'reason'     => 'required',
         ]);
 
-        DB::beginTransaction();
         try {
-
-            $leaves = new LeavesAdmin;
-            $leaves->user_id       = $request->user_id;
-            $leaves->leave_type    = $request->leave_type;
-            $leaves->from_date     = $request->from_date;
-            $leaves->to_date       = $request->to_date;
-            $leaves->no_of_day     = $request->no_of_day;
-            $leaves->leave_reason  = $request->leave_reason;
-            $leaves->save();
             
-            DB::commit();
-            flash()->success('Create new Leaves successfully :)');
+            $save  = new Leave;
+            $save->staff_id         = Session::get('user_id');
+            $save->employee_name    = Session::get('name');
+            $save->leave_type       = $request->leave_type;
+            $save->remaining_leave  = $request->remaining_leave;
+            $save->date_from        = $request->date_from;
+            $save->date_to          = $request->date_to;
+            $save->number_of_day    = $request->number_of_day;
+            $save->leave_date       = json_encode($request->leave_date);
+            $save->leave_day        = json_encode($request->select_leave_day);
+            $save->status           = 'Pending';
+            $save->reason           = $request->reason;
+            $save->save();
+    
+            flash()->success('Apply Leave successfully :)');
             return redirect()->back();
-        } catch(\Exception $e) {
-            DB::rollback();
-            flash()->error('Add Leaves fail :)');
+        } catch (\Exception $e) {
+            \Log::error($e); // Log the error
+            flash()->error('Failed Apply Leave :)');
             return redirect()->back();
         }
     }
