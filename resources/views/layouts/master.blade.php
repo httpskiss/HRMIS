@@ -8,6 +8,7 @@
 	<meta name="keywords" content="admin, estimates, bootstrap, business, corporate, creative, management, minimal, modern, accounts, invoice, html5, responsive, CRM, Projects">
 	<meta name="author" content="SoengSouy Admin Template">
 	<meta name="robots" content="noindex, nofollow">
+	<meta name="csrf-token" content="{{ csrf_token() }}">
 	<title>Dashboard - HRMS</title>
 	<!-- Favicon -->
 	<link rel="shortcut icon" type="image/x-icon" href="{{ URL::to('assets/img/favicon.png') }}">
@@ -23,8 +24,6 @@
 	<link rel="stylesheet" href="{{ URL::to('assets/css/select2.min.css') }}">
 	<!-- Datetimepicker CSS -->
 	<link rel="stylesheet" href="{{ URL::to('assets/css/bootstrap-datetimepicker.min.css') }}">
-	<!-- Chart CSS -->
-	<link rel="stylesheet" href="{{ URL::to('ssets/plugins/morris/morris.css') }}">
 	<!-- Main CSS -->
 	<link rel="stylesheet" href="{{ URL::to('assets/css/style.css') }}">
 
@@ -349,7 +348,6 @@
 	<script src="{{ URL::to('assets/plugins/raphael/raphael.min.js') }}"></script>
 	<script src="{{ URL::to('assets/js/chart.js') }}"></script>
 	<script src="{{ URL::to('assets/js/Chart.min.js') }}"></script>
-	<script src="{{ URL::to('assets/js/line-chart.js') }}"></script>	
 	<!-- Slimscroll JS -->
 	<script src="{{ URL::to('assets/js/jquery.slimscroll.min.js') }}"></script>
 	<!-- Select2 JS -->

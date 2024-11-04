@@ -1,6 +1,22 @@
 
 @extends('layouts.master')
 @section('content')
+    <style>
+        .select {
+            width: 100%; /* Make dropdowns responsive */
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            background-color: white; /* Light background color */
+            color: #333; /* Text color */
+            transition: border-color 0.3s; /* Smooth transition for border color */
+        }
+        .select:focus {
+            border-color: red; /* Change border color on focus */
+            outline: none; /* Remove default outline */
+        }
+    </style>
     <!-- Page Wrapper -->
     <div class="page-wrapper">
         <!-- Page Content -->
@@ -23,30 +39,16 @@
             
             <!-- Leave Statistics -->
             <div class="row">
-                <div class="col-md-3">
-                    <div class="stats-info">
-                        <h6>Annual Leave</h6>
-                        <h4>12</h4>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="stats-info">
-                        <h6>Medical Leave</h6>
-                        <h4>3</h4>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="stats-info">
-                        <h6>Other Leave</h6>
-                        <h4>4</h4>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="stats-info">
-                        <h6>Remaining Leave</h6>
-                        <h4>5</h4>
-                    </div>
-                </div>
+                @foreach($leaveInformation as $key => $leaves)
+                    @if($leaves->leave_type != 'Total Leave Balance')   
+                        <div class="col-md-2">
+                            <div class="stats-info">
+                                <h6>{{ $leaves->leave_type }}</h6>
+                                <h4>{{ $leaves->leave_days }}</h4>
+                            </div>
+                        </div>
+                    @endif
+                @endforeach
             </div>
             <!-- /Leave Statistics -->
             
@@ -136,7 +138,7 @@
        
 		<!-- Add Leave Modal -->
         <div id="add_leave" class="modal custom-modal fade" role="dialog">
-            <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">Add Leave</h5>
@@ -145,43 +147,79 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form>
-                            <div class="form-group">
-                                <label>Leave Type <span class="text-danger">*</span></label>
-                                <select class="select">
-                                    <option>Select Leave Type</option>
-                                    <option>Casual Leave 12 Days</option>
-                                    <option>Medical Leave</option>
-                                    <option>Loss of Pay</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>From <span class="text-danger">*</span></label>
-                                <div class="cal-icon">
-                                    <input class="form-control datetimepicker" type="text">
+                        <form action="" method="POST">
+                            @csrf
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Leave Type <span class="text-danger">*</span></label>
+                                        <select class="select" id="leave_type">
+                                            <option selected disabled>Select Leave Type</option>
+                                            <option value="Medical Leave">Medical Leave</option>
+                                            <option value="Casual Leave">Casual Leave</option>
+                                            <option value="Sick Leave">Sick Leave</option>
+                                            <option value="Annual Leave">Annual Leave</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Remaining Leaves <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="remaining_leave" readonly value="0">
+                                    </div>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <label>To <span class="text-danger">*</span></label>
-                                <div class="cal-icon">
-                                    <input class="form-control datetimepicker" type="text">
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>From <span class="text-danger">*</span></label>
+                                        <div class="cal-icon">
+                                            <input type="text" class="form-control datetimepicker-cus" id="date_from" name="">
+                                        </div>
+                                    </div>
                                 </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>To <span class="text-danger">*</span></label>
+                                        <div class="cal-icon">
+                                            <input type="text" class="form-control datetimepicker-cus" id="date_to" name="">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>  
+                            <div class="row">
+                                <div class="col-md-6" id="leave_dates_display" style="display: none"></div>
+                                <div class="col-md-6" id="select_leave_day" style="display: none"></div>
                             </div>
                             <div class="form-group">
                                 <label>Number of days <span class="text-danger">*</span></label>
-                                <input class="form-control" readonly type="text">
+                                <input type="text" class="form-control" id="number_of_day" name="number_of_day" value="0" readonly>
                             </div>
-                            <div class="form-group">
-                                <label>Remaining Leaves <span class="text-danger">*</span></label>
-                                <input class="form-control" readonly value="12" type="text">
+                            <div class="row">
+                                <div id="leave_day_select" class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Leave Day <span class="text-danger">*</span></label>
+                                        <select class="select" name="select_leave_day[]" id="leave_day">
+                                            <option value="Full-Day Leave">Full-Day Leave</option>
+                                            <option value="Half-Day Morning Leave">Half-Day Morning Leave</option>
+                                            <option value="Half-Day Afternoon Leave">Half-Day Afternoon Leave</option>
+                                            <option value="Public Holiday">Public Holiday</option>
+                                            <option value="Off Schedule">Off Schedule</option>
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
+
                             <div class="form-group">
                                 <label>Leave Reason <span class="text-danger">*</span></label>
-                                <textarea rows="4" class="form-control"></textarea>
+                                <textarea rows="2" class="form-control" name="leave_reason"></textarea>
                             </div>
+                           
                             <div class="submit-section">
                                 <button class="btn btn-primary submit-btn">Submit</button>
                             </div>
+                            
                         </form>
                     </div>
                 </div>
@@ -269,4 +307,164 @@
 
     </div>
     <!-- /Page Wrapper -->
+@section('script')
+    <script>
+        // Define the URL for the AJAX request
+        var url = "{{ route('hr/get/information/leave') }}";
+        
+        // Function to handle leave type change
+        function handleLeaveTypeChange() {
+            var leaveType   = $('#leave_type').val();
+            var numberOfDay = $('#number_of_day').val();    
+            $.post(url, {
+                leave_type: leaveType,
+                number_of_day: numberOfDay,
+                _token: $('meta[name="csrf-token"]').attr('content')
+            }, function(data) {
+                if (data.response_code == 200) {
+                    $('#remaining_leave').val(data.leave_type);
+                }
+            }, 'json');
+        }
+        
+        function countLeaveDays()
+        {
+            // Get the date values from input fields
+            var dateFrom = new Date($('#date_from').val());
+            var dateTo   = new Date($('#date_to').val());
+            var leaveDay = $('#leave_day').val();
+            
+            if (!isNaN(dateFrom) && !isNaN(dateTo)) {
+                var numDays = Math.ceil((dateTo - dateFrom) / (1000 * 3600 * 24)) + 1;
+                if (leaveDay.includes('Half-Day')) numDays -= 0.5;
+                $('#number_of_day').val(numDays);
+                updateRemainingLeave(numDays);
+
+                // Clear previous display
+                $('#leave_dates_display').empty();
+                $('#select_leave_day').empty();
+
+                // Display each date one by one if numDays > 0
+                if (numDays > 0) {
+                    for (let d = 0; d < numDays; d++) {
+                        let currentDate = new Date(dateFrom);
+                        currentDate.setDate(currentDate.getDate() + d);
+                        var formattedDate = currentDate.getDate() + ' ' + (currentDate.getMonth() + 1) + ',' + currentDate.getFullYear();
+
+                        document.getElementById('leave_day_select').style.display = 'block'; // or 'flex', depending on your layout
+                        // Append each leave date to the display
+                        if (numDays > 1) {
+                            document.getElementById('leave_dates_display').style.display = 'block'; // or 'flex', depending on your layout
+                            document.getElementById('select_leave_day').style.display = 'block'; // or 'flex', depending on your layout
+
+                            const inputDate = formattedDate;
+                            let [day, month, year] = inputDate.split(/[\s,]+/);
+                            let date = new Date(year, month - 1, day - 1);
+                            let formattedDateConvert = currentDate.getDate() + ' ' + currentDate.toLocaleString('en-GB', { month: 'short' }) + ', ' + currentDate.getFullYear();
+
+                            // Create unique IDs for inputs and labels
+                            let leaveDateInputId = `leave_date_${d}`;
+
+                            // Append each leave date to the display
+                            $('#leave_dates_display').append(`
+                                <div class="form-group">
+                                    <label><span class="text-danger">Leave Date ${d+1}</span></label>
+                                    <div class="cal-icon">
+                                        <input type="text" class="form-control" id="${leaveDateInputId}" name="leave_date[]" value="${formattedDateConvert}" readonly>
+                                    </div>
+                                </div>
+                            `);
+                            // Function to generate leave day select elements
+                            function generateLeaveDaySelects(numDays) {
+                                $('#select_leave_day').empty(); // Clear existing elements
+                                for (let d = 0; d < numDays; d++) {
+                                    let leaveDayId = `leave_day_${d}`;
+                                    document.getElementById('leave_day_select').style.display = 'none'; // or 'flex', depending on your layout
+                                    $('#select_leave_day').append(`
+                                        <div class="form-group">
+                                            <label><span class="text-danger">Leave Day ${d+1}</span></label>
+                                            <select class="select" name="select_leave_day[]" id="${leaveDayId}">
+                                                <option value="Full-Day Leave">Full-Day Leave</option>
+                                                <option value="Half-Day Morning Leave">Half-Day Morning Leave</option>
+                                                <option value="Half-Day Afternoon Leave">Half-Day Afternoon Leave</option>
+                                                <option value="Public Holiday">Public Holiday</option>
+                                                <option value="Off Schedule">Off Schedule</option>
+                                            </select>
+                                        </div>
+                                    `);
+                                }
+                            }
+
+                            // Call this function when you need to set up the dropdowns
+                            generateLeaveDaySelects(numDays);
+
+                            // Function to update total leave days and remaining leave
+                            function updateLeaveDaysAndRemaining() {
+                                let totalDays = numDays; // Start with the total number of days
+                                for (let d = 0; d < numDays; d++) {
+                                    let leaveType = $(`#leave_day_${d}`).val(); // Get the selected leave type
+                                    if (leaveType && leaveType.includes('Half-Day')) totalDays -= 0.5;
+                                }
+                                $('#number_of_day').val(totalDays);
+                                // Update remaining leave
+                                updateRemainingLeave(totalDays);
+                            }
+
+                            // Event listener for leave day selection change
+                            $(document).on('change', '[id^="leave_day"]', updateLeaveDaysAndRemaining);
+
+                            // Initial setup
+                            updateLeaveDaysAndRemaining();
+                        } else {
+                            $('#leave_dates_display').hide();
+                            $('#select_leave_day').hide();
+                        }
+                    }
+                    
+                }
+            } else {
+                $('#number_of_day').val('0');
+                $('#leave_dates_display').text(''); // Clear the display in case of invalid dates
+                $('#select_leave_day').text(''); // Clear the display in case of invalid dates
+            }
+        }
+            
+        // Function to update remaining leave
+        function updateRemainingLeave(numDays) {
+            $.post(url, {
+                number_of_day: numDays,
+                leave_type: $('#leave_type').val(),
+                _token: $('meta[name="csrf-token"]').attr('content')
+            }, function(data) {
+                if (data.response_code == 200) {
+                    $('#remaining_leave').val(data.leave_type);
+                    $('#apply_leave').prop('disabled', data.leave_type <= 0);
+                    if (data.leave_type < 0) {
+                        toastr.info('You cannot apply for leave at this time.');
+                    }
+                }
+            }, 'json');
+        }
+        
+        // Event listeners
+        $('#leave_type').on('change', handleLeaveTypeChange);
+        $('#date_from, #date_to, #leave_day').on('dp.change', countLeaveDays);
+
+        // Clearn data in form
+        $(document).on('click', '.close', function() {
+            // Clear the leave dates display
+            $('#leave_dates_display').empty();
+            // Clear the select leave day display
+            $('#select_leave_day').empty();
+            // Reset other relevant fields
+            $('#number_of_day').val('');
+            $('#date_from').val('');
+            $('#date_to').val('');
+            $('#leave_type').val(''); // Reset to default value if needed
+            $('#remaining_leave').val('');
+            // Optionally hide any UI elements
+            $('#leave_day_select').hide(); // or reset to its original state
+        });
+    </script>
+@endsection
 @endsection

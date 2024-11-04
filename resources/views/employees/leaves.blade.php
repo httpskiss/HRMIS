@@ -136,7 +136,7 @@
                                             <td>{{date('d F, Y',strtotime($items->from_date)) }}</td>
                                             <td hidden class="to_date">{{$items->to_date}}</td>
                                             <td>{{date('d F, Y',strtotime($items->to_date)) }}</td>
-                                            <td class="day">{{$items->day}} Day</td>
+                                            <td class="no_of_day">{{$items->no_of_day}} Day</td>
                                             <td class="leave_reason">{{$items->leave_reason}}</td>
                                             <td class="text-center">
                                                 <div class="dropdown action-label">
@@ -200,6 +200,7 @@
                                     <input type="text" class="form-control datetimepicker" id="from_date" name="from_date">
                                 </div>
                             </div>
+                           
                             <div class="form-group">
                                 <label>To <span class="text-danger">*</span></label>
                                 <div class="cal-icon">
@@ -207,8 +208,12 @@
                                 </div>
                             </div>
                             <div class="form-group">
+                                <label>No of Days<span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="no_of_day" name="no_of_day" readonly>
+                            </div>
+                            <div class="form-group">
                                 <label>Leave Reason <span class="text-danger">*</span></label>
-                                <textarea rows="4" class="form-control" id="leave_reason" name="leave_reason"></textarea>
+                                <textarea rows="2" class="form-control" id="leave_reason" name="leave_reason"></textarea>
                             </div>
                             <div class="submit-section">
                                 <button type="submit" class="btn btn-primary submit-btn">Submit</button>
@@ -328,7 +333,8 @@
         <!-- /Delete Leave Modal -->
     </div>
     <!-- /Page Wrapper -->
-    @section('script')
+@section('script')
+
     <script>
         document.getElementById("year").innerHTML = new Date().getFullYear();
     </script>
@@ -338,12 +344,11 @@
         {
             var _this = $(this).parents('tr');
             $('#e_id').val(_this.find('.id').text());
-            $('#e_number_of_days').val(_this.find('.day').text());
+            $('#e_number_of_days').val(_this.find('.no_of_day').text());
             $('#e_from_date').val(_this.find('.from_date').text());  
             $('#e_to_date').val(_this.find('.to_date').text());  
             $('#e_leave_reason').val(_this.find('.leave_reason').text());
             $('#e_leave_type').val(_this.find('.leave_type').text()).change();
-
         });
     </script>
     {{-- delete model --}}

@@ -3,17 +3,53 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\LeaveInformation;
 use App\Models\LeavesAdmin;
+use App\Models\Leave;
 use DateTime;
+use Session;
 use DB;
 
 class LeavesController extends Controller
 {
-    /** leaves page */
+    /** Leaves Admin Page */
     public function leaves()
     {
         $leaves = DB::table('leaves_admins')->join('users', 'users.user_id','leaves_admins.user_id')->select('leaves_admins.*', 'users.position','users.name','users.avatar')->get();
         return view('employees.leaves',compact('leaves'));
+    }
+
+    /** Get Information Leave */
+    public function getInformationLeave(Request $request)
+    {
+        try {
+
+            $numberOfDay = $request->number_of_day;
+            $leaveType   = $request->leave_type;
+            
+            $leaveDay = LeaveInformation::where('leave_type', $leaveType)->first();
+            
+            if ($leaveDay) {
+                $days = $leaveDay->leave_days - ($numberOfDay ?? 0);
+            } else {
+                $days = 0; // Handle case if leave type doesn't exist
+            }
+            
+            $data = [
+                'response_code' => 200,
+                'status'        => 'success',
+                'message'       => 'Get success',
+                'leave_type'    => $days,
+                'number_of_day' => $numberOfDay,
+            ];
+            
+            return response()->json($data);
+
+        } catch (\Exception $e) {
+            // Log the exception and return an appropriate response
+            \Log::error($e->getMessage());
+            return response()->json(['error' => 'An error occurred.'], 500);
+        }
     }
 
     /** Save Record */
@@ -29,17 +65,12 @@ class LeavesController extends Controller
         DB::beginTransaction();
         try {
 
-            $from_date = new DateTime($request->from_date);
-            $to_date   = new DateTime($request->to_date);
-            $day       = $from_date->diff($to_date);
-            $days      = $day->d;
-
             $leaves = new LeavesAdmin;
             $leaves->user_id       = $request->user_id;
             $leaves->leave_type    = $request->leave_type;
             $leaves->from_date     = $request->from_date;
             $leaves->to_date       = $request->to_date;
-            $leaves->day           = $days;
+            $leaves->no_of_day     = $request->no_of_day;
             $leaves->leave_reason  = $request->leave_reason;
             $leaves->save();
             
@@ -116,10 +147,12 @@ class LeavesController extends Controller
         return view('employees.attendanceemployee');
     }
 
-    /** Leaves Employee */
+    /** Leaves Employee Page */
     public function leavesEmployee()
     {
-        return view('employees.leavesemployee');
+        $leaveInformation = LeaveInformation::all();
+        $leave = Leave::where('staff_id', Session::get('user_id'))->get();
+        return view('employees.leavesemployee',compact('leaveInformation'));
     }
 
     /** Shift Scheduling */

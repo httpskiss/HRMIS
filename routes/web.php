@@ -138,41 +138,53 @@ Route::group(['namespace' => 'App\Http\Controllers'],function()
 
     });
     
-    // ---------------------------- form employee ---------------------------//
+    // ---------------------------- Form Employee ---------------------------//
     Route::controller(EmployeeController::class)->group(function () {
-        Route::get('all/employee/card', 'cardAllEmployee')->middleware('auth')->name('all/employee/card');
-        Route::get('all/employee/list', 'listAllEmployee')->middleware('auth')->name('all/employee/list');
-        Route::post('all/employee/save', 'saveRecord')->middleware('auth')->name('all/employee/save');
-        Route::get('all/employee/view/edit/{employee_id}', 'viewRecord');
-        Route::post('all/employee/update', 'updateRecord')->middleware('auth')->name('all/employee/update');
-        Route::get('all/employee/delete/{employee_id}', 'deleteRecord')->middleware('auth');
-        Route::post('all/employee/search', 'employeeSearch')->name('all/employee/search');
-        Route::post('all/employee/list/search', 'employeeListSearch')->name('all/employee/list/search');
-
-        Route::get('form/departments/page', 'index')->middleware('auth')->name('form/departments/page');    
-        Route::post('form/departments/save', 'saveRecordDepartment')->middleware('auth')->name('form/departments/save');    
-        Route::post('form/department/update', 'updateRecordDepartment')->middleware('auth')->name('form/department/update');    
-        Route::post('form/department/delete', 'deleteRecordDepartment')->middleware('auth')->name('form/department/delete');  
-        
-        Route::get('form/designations/page', 'designationsIndex')->middleware('auth')->name('form/designations/page');    
-        Route::post('form/designations/save', 'saveRecordDesignations')->middleware('auth')->name('form/designations/save');    
-        Route::post('form/designations/update', 'updateRecordDesignations')->middleware('auth')->name('form/designations/update');    
-        Route::post('form/designations/delete', 'deleteRecordDesignations')->middleware('auth')->name('form/designations/delete');
-        
-        Route::get('form/timesheet/page', 'timeSheetIndex')->middleware('auth')->name('form/timesheet/page');    
-        Route::post('form/timesheet/save', 'saveRecordTimeSheets')->middleware('auth')->name('form/timesheet/save');    
-        Route::post('form/timesheet/update', 'updateRecordTimeSheets')->middleware('auth')->name('form/timesheet/update');    
-        Route::post('form/timesheet/delete', 'deleteRecordTimeSheets')->middleware('auth')->name('form/timesheet/delete');
-        
-        Route::get('form/overtime/page', 'overTimeIndex')->middleware('auth')->name('form/overtime/page');    
-        Route::post('form/overtime/save', 'saveRecordOverTime')->middleware('auth')->name('form/overtime/save');    
-        Route::post('form/overtime/update', 'updateRecordOverTime')->middleware('auth')->name('form/overtime/update');    
-        Route::post('form/overtime/delete', 'deleteRecordOverTime')->middleware('auth')->name('form/overtime/delete');  
-    });
-
-    // ------------------------- profile employee --------------------------//
-    Route::controller(EmployeeController::class)->group(function () {
-        Route::get('employee/profile/{user_id}', 'profileEmployee')->middleware('auth');
+        Route::middleware('auth')->group(function () {
+            // ---------------------------- Employee Management Routes ---------------------------
+            Route::prefix('all/employee')->group(function () {
+                Route::get('/card', 'cardAllEmployee')->name('all/employee/card');
+                Route::get('/list', 'listAllEmployee')->name('all/employee/list');
+                Route::post('/save', 'saveRecord')->name('all/employee/save');
+                Route::get('/view/edit/{employee_id}', 'viewRecord');
+                Route::post('/update', 'updateRecord')->name('all/employee/update');
+                Route::get('/delete/{employee_id}', 'deleteRecord');
+                Route::post('/search', 'employeeSearch')->name('all/employee/search');
+                Route::post('/list/search', 'employeeListSearch')->name('all/employee/list/search');
+            });
+            Route::prefix('form')->group(function () {
+                // ---------------------------- Departments ---------------------------
+                Route::prefix('departments')->controller(EmployeeController::class)->group(function () {
+                    Route::get('/page', 'index')->name('form/departments/page');    
+                    Route::post('/save', 'saveRecordDepartment')->name('form/departments/save');    
+                    Route::post('/update', 'updateRecordDepartment')->name('form/department/update');    
+                    Route::post('/delete', 'deleteRecordDepartment')->name('form/department/delete');  
+                });
+                // ---------------------------- Designations ---------------------------
+                Route::prefix('designations')->group(function () {
+                    Route::get('/page', 'designationsIndex')->name('form/designations/page');    
+                    Route::post('/save', 'saveRecordDesignations')->name('form/designations/save');    
+                    Route::post('/update', 'updateRecordDesignations')->name('form/designations/update');    
+                    Route::post('/delete', 'deleteRecordDesignations')->name('form/designations/delete');
+                });
+                // ---------------------------- Time Sheet ---------------------------
+                Route::prefix('timesheet')->group(function () {
+                    Route::get('/page', 'timeSheetIndex')->name('form/timesheet/page');    
+                    Route::post('/save', 'saveRecordTimeSheets')->name('form/timesheet/save');    
+                    Route::post('/update', 'updateRecordTimeSheets')->name('form/timesheet/update');    
+                    Route::post('/delete', 'deleteRecordTimeSheets')->name('form/timesheet/delete');
+                });
+                // ---------------------------- Over Time ---------------------------
+                Route::prefix('overtime')->group(function () {
+                    Route::get('/page', 'overTimeIndex')->name('form/overtime/page');    
+                    Route::post('/save', 'saveRecordOverTime')->name('form/overtime/save');    
+                    Route::post('/update', 'updateRecordOverTime')->name('form/overtime/update');    
+                    Route::post('/delete', 'deleteRecordOverTime')->name('form/overtime/delete');  
+                });
+            });
+            // ------------------------- Profile Employee --------------------------//
+            Route::get('employee/profile/{user_id}', 'profileEmployee');
+        });
     });
 
     // --------------------------- form holiday ---------------------------//
@@ -185,22 +197,25 @@ Route::group(['namespace' => 'App\Http\Controllers'],function()
         });
     });
 
-    // -------------------------- form leaves ----------------------------//
+    // ---------------------------- Leaves ---------------------------//
     Route::controller(LeavesController::class)->group(function () {
-        Route::get('form/leaves/new', 'leaves')->middleware('auth')->name('form/leaves/new');
-        Route::get('form/leavesemployee/new', 'leavesEmployee')->middleware('auth')->name('form/leavesemployee/new');
-        Route::post('form/leaves/save', 'saveRecord')->middleware('auth')->name('form/leaves/save');
-        Route::post('form/leaves/edit', 'editRecordLeave')->middleware('auth')->name('form/leaves/edit');
-        Route::post('form/leaves/edit/delete','deleteLeave')->middleware('auth')->name('form/leaves/edit/delete');    
-    });
-
-    // ------------------------ form attendance  -------------------------//
-    Route::controller(LeavesController::class)->group(function () {
-        Route::get('form/leavesettings/page', 'leaveSettings')->middleware('auth')->name('form/leavesettings/page');
-        Route::get('attendance/page', 'attendanceIndex')->middleware('auth')->name('attendance/page');
-        Route::get('attendance/employee/page', 'AttendanceEmployee')->middleware('auth')->name('attendance/employee/page');
-        Route::get('form/shiftscheduling/page', 'shiftScheduLing')->middleware('auth')->name('form/shiftscheduling/page');
-        Route::get('form/shiftlist/page', 'shiftList')->middleware('auth')->name('form/shiftlist/page');    
+        Route::middleware('auth')->group(function () {
+            // ------------------- Employee Management Routes ---------------------
+            Route::prefix('form/leaves')->group(function () {
+                Route::get('/new', 'leaves')->name('form/leaves/new');
+                Route::get('/employee/new', 'leavesEmployee')->name('form/leaves/employee/new');
+                Route::post('/save', 'saveRecord')->name('form/leaves/save');
+                Route::post('/edit', 'editRecordLeave')->name('form/leaves/edit');
+                Route::post('/edit/delete','deleteLeave')->name('form/leaves/edit/delete');
+            });
+            // --------------------- Form Attendance  -------------------------//
+            Route::post('get/information/leave', 'getInformationLeave')->name('hr/get/information/leave');
+            Route::get('form/leavesettings/page', 'leaveSettings')->name('form/leavesettings/page');
+            Route::get('attendance/page', 'attendanceIndex')->name('attendance/page');
+            Route::get('attendance/employee/page', 'AttendanceEmployee')->name('attendance/employee/page');
+            Route::get('form/shiftscheduling/page', 'shiftScheduLing')->name('form/shiftscheduling/page');
+            Route::get('form/shiftlist/page', 'shiftList')->name('form/shiftlist/page');    
+        });
     });
 
     // ------------------------ form payroll  ----------------------------//
