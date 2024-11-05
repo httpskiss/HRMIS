@@ -352,7 +352,7 @@
 
                         document.getElementById('leave_day_select').style.display = 'block'; // or 'flex', depending on your layout
                         // Append each leave date to the display
-                        if (numDays > 1) {
+                        if (numDays > 0) {
                             document.getElementById('leave_dates_display').style.display = 'block'; // or 'flex', depending on your layout
                             document.getElementById('select_leave_day').style.display = 'block'; // or 'flex', depending on your layout
 
@@ -373,6 +373,7 @@
                                     </div>
                                 </div>
                             `);
+                            
                             // Function to generate leave day select elements
                             function generateLeaveDaySelects(numDays) {
                                 $('#select_leave_day').empty(); // Clear existing elements
@@ -411,6 +412,7 @@
 
                             // Event listener for leave day selection change
                             $(document).on('change', '[id^="leave_day"]', updateLeaveDaysAndRemaining);
+
 
                             // Initial setup
                             updateLeaveDaysAndRemaining();

@@ -24,7 +24,7 @@ class Leave extends Model
   
         try {
             
-            $save  = new Leave;
+            $save = new Leave;
             $save->staff_id         = Session::get('user_id');
             $save->employee_name    = Session::get('name');
             $save->leave_type       = $request->leave_type;
