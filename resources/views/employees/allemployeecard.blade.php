@@ -176,28 +176,28 @@
                                             <input type="hidden" name="permission[]" value="{{ $lists->permission_name }}">
                                             <input type="hidden" name="id_count[]" value="{{ $lists->id }}">
                                             <td class="text-center">
-                                                <input type="checkbox" class="option-input checkbox read{{ ++$key }}" id="read" name="read[]" value="Y"{{ $lists->read =="Y" ? 'checked' : ''}} >
-                                                <input type="checkbox" class="option-input checkbox read{{ ++$key1 }}" id="read" name="read[]" value="N" {{ $lists->read =="N" ? 'checked' : ''}}>
+                                                <input type="checkbox" class="option-input checkbox read{{ ++$key }}" id="green" name="read[]" value="Y"{{ $lists->read =="Y" ? 'checked' : ''}} >
+                                                <input type="checkbox" class="option-input checkbox read{{ ++$key1 }}" id="red" name="read[]" value="N" {{ $lists->read =="N" ? 'checked' : ''}}>
                                             </td>
                                             <td class="text-center">
-                                                <input type="checkbox" class="option-input checkbox write{{ ++$key }}" id="write" name="write[]" value="Y" {{ $lists->write =="Y" ? 'checked' : ''}}>
-                                                <input type="checkbox" class="option-input checkbox write{{ ++$key1 }}" id="write" name="write[]" value="N" {{ $lists->write =="N" ? 'checked' : ''}}>
+                                                <input type="checkbox" class="option-input checkbox write{{ ++$key }}" id="green" name="write[]" value="Y" {{ $lists->write =="Y" ? 'checked' : ''}}>
+                                                <input type="checkbox" class="option-input checkbox write{{ ++$key1 }}" id="red" name="write[]" value="N" {{ $lists->write =="N" ? 'checked' : ''}}>
                                             </td>
                                             <td class="text-center">
-                                                <input type="checkbox" class="option-input checkbox create{{ ++$key }}" id="create" name="create[]" value="Y" {{ $lists->create =="Y" ? 'checked' : ''}}>
-                                                <input type="checkbox" class="option-input checkbox create{{ ++$key1 }}" id="create" name="create[]" value="N" {{ $lists->create =="N" ? 'checked' : ''}}>
+                                                <input type="checkbox" class="option-input checkbox create{{ ++$key }}" id="green" name="create[]" value="Y" {{ $lists->create =="Y" ? 'checked' : ''}}>
+                                                <input type="checkbox" class="option-input checkbox create{{ ++$key1 }}" id="red" name="create[]" value="N" {{ $lists->create =="N" ? 'checked' : ''}}>
                                             </td>
                                             <td class="text-center">
-                                                <input type="checkbox" class="option-input checkbox delete{{ ++$key }}" id="delete" name="delete[]" value="Y" {{ $lists->delete =="Y" ? 'checked' : ''}}>
-                                                <input type="checkbox" class="option-input checkbox delete{{ ++$key1 }}" id="delete" name="delete[]" value="N" {{ $lists->delete =="N" ? 'checked' : ''}}>
+                                                <input type="checkbox" class="option-input checkbox delete{{ ++$key }}" id="green" name="delete[]" value="Y" {{ $lists->delete =="Y" ? 'checked' : ''}}>
+                                                <input type="checkbox" class="option-input checkbox delete{{ ++$key1 }}" id="red" name="delete[]" value="N" {{ $lists->delete =="N" ? 'checked' : ''}}>
                                             </td>
                                             <td class="text-center">
-                                                <input type="checkbox" class="option-input checkbox import{{ ++$key }}" id="import" name="import[]" value="Y" {{ $lists->import =="Y" ? 'checked' : ''}}>
-                                                <input type="checkbox" class="option-input checkbox import{{ ++$key1 }}" id="import" name="import[]" value="N" {{ $lists->import =="N" ? 'checked' : ''}}>
+                                                <input type="checkbox" class="option-input checkbox import{{ ++$key }}" id="green" name="import[]" value="Y" {{ $lists->import =="Y" ? 'checked' : ''}}>
+                                                <input type="checkbox" class="option-input checkbox import{{ ++$key1 }}" id="red" name="import[]" value="N" {{ $lists->import =="N" ? 'checked' : ''}}>
                                             </td>
                                             <td class="text-center">
-                                                <input type="checkbox" class="option-input checkbox export{{ ++$key }}" id="export" name="export[]" value="Y" {{ $lists->export =="Y" ? 'checked' : ''}}>
-                                                <input type="checkbox" class="option-input checkbox export{{ ++$key1 }}" id="export" name="export[]" value="N" {{ $lists->export =="N" ? 'checked' : ''}}>
+                                                <input type="checkbox" class="option-input checkbox export{{ ++$key }}" id="green" name="export[]" value="Y" {{ $lists->export =="Y" ? 'checked' : ''}}>
+                                                <input type="checkbox" class="option-input checkbox export{{ ++$key1 }}" id="red" name="export[]" value="N" {{ $lists->export =="N" ? 'checked' : ''}}>
                                             </td>
                                         </tr>
                                         @endforeach
