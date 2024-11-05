@@ -18,35 +18,19 @@ class RegisterController extends Controller
         return view('auth.register', compact('roles'));
     }
 
-    /** Store a new user */
+    /** Store New User */
     public function storeUser(Request $request)
     {
-        $request->validate([
-            'name'      => 'required|string|max:255',
-            'email'     => 'required|string|email|max:255|unique:users',
-            'role_name' => 'required|string|max:255',
-            'password'  => 'required|string|min:8|confirmed',
-        ]);
-        
         try {
-            $todayDate = Carbon::now()->toDayDateTimeString();
-
-            User::create([
-                'name'      => $request->name,
-                'avatar'    => $request->image,
-                'email'     => $request->email,
-                'join_date' => $todayDate,
-                'last_login'=> $todayDate,
-                'role_name' => $request->role_name,
-                'status'    => 'Active',
-                'password'  => Hash::make($request->password),
-            ]);
-
+           // Create an instance of the User model
+            $users = new User();
+            // Call the saveNewuser method
+            return $users->saveNewuser($request);
             flash()->success('Account created successfully :)');
             return redirect('login');
         } catch (\Exception $e) {
             \Log::error($e);
-            flash()->error('Failed to create account. Please try again.');
+            flash()->error('Failed to Create Account. Please try again.');
             return redirect()->back();
         }
     }

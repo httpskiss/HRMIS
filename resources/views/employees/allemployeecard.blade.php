@@ -121,7 +121,7 @@
                                     <div class="form-group">
                                         <label>Birth Date</label>
                                         <div class="cal-icon">
-                                            <input class="form-control datetimepicker" type="text" id="birthDate" name="birthDate">
+                                            <input class="form-control datetimepicker" type="text" id="birthDate" name="birth_date">
                                         </div>
                                     </div>
                                 </div>
@@ -143,8 +143,8 @@
                                 <div class="col-sm-6">
                                     <div class="form-group">
                                         <label class="col-form-label">Line Manager</label>
-                                        <select class="select select2s-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true" id="company" name="company">
-                                            <option value="">-- Select --</option>
+                                        <select class="select select2s-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true" id="line_manager" name="line_manager">
+                                            <option selected disabled>-- Select --</option>
                                             @foreach ($userList as $key=>$user )
                                                 <option value="{{ $user->name }}">{{ $user->name }}</option>
                                             @endforeach

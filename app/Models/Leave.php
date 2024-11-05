@@ -25,17 +25,18 @@ class Leave extends Model
         try {
             
             $save = new Leave;
-            $save->staff_id         = Session::get('user_id');
-            $save->employee_name    = Session::get('name');
-            $save->leave_type       = $request->leave_type;
-            $save->remaining_leave  = $request->remaining_leave;
-            $save->date_from        = $request->date_from;
-            $save->date_to          = $request->date_to;
-            $save->number_of_day    = $request->number_of_day;
-            $save->leave_date       = json_encode($request->leave_date);
-            $save->leave_day        = json_encode($request->select_leave_day);
-            $save->status           = 'Pending';
-            $save->reason           = $request->reason;
+            $save->staff_id        = Session::get('user_id');
+            $save->employee_name   = Session::get('name');
+            $save->leave_type      = $request->leave_type;
+            $save->remaining_leave = $request->remaining_leave;
+            $save->date_from       = $request->date_from;
+            $save->date_to         = $request->date_to;
+            $save->number_of_day   = $request->number_of_day;
+            $save->leave_date      = json_encode($request->leave_date);
+            $save->leave_day       = json_encode($request->select_leave_day);
+            $save->status          = 'Pending';
+            $save->reason          = $request->reason;
+            $save->approved_by     = Session::get('line_manager');
             $save->save();
     
             flash()->success('Apply Leave successfully :)');

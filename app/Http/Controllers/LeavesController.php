@@ -128,8 +128,8 @@ class LeavesController extends Controller
     public function leavesEmployee()
     {
         $leaveInformation = LeaveInformation::all();
-        $leave = Leave::where('staff_id', Session::get('user_id'))->get();
-        return view('employees.leavesemployee',compact('leaveInformation'));
+        $getLeave = Leave::where('staff_id', Session::get('user_id'))->get();
+        return view('employees.leavesemployee',compact('leaveInformation', 'getLeave'));
     }
 
     /** Shift Scheduling */

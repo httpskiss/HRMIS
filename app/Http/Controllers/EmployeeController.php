@@ -16,7 +16,7 @@ class EmployeeController extends Controller
     {
         $users = DB::table('users')
                     ->join('employees','users.user_id','employees.employee_id')
-                    ->select('users.*','employees.birth_date', 'employees.gender','employees.company')
+                    ->select('users.*','employees.birth_date', 'employees.gender','employees.line_manager')
                     ->get(); 
         $userList = DB::table('users')->get();
         $permission_lists = DB::table('permission_lists')->get();
@@ -28,7 +28,7 @@ class EmployeeController extends Controller
     {
         $users = DB::table('users')
                     ->join('employees','users.user_id', 'employees.employee_id')
-                    ->select('users.*','employees.birth_date','employees.gender','employees.company')
+                    ->select('users.*','employees.birth_date','employees.gender','employees.line_manager')
                     ->get();
         $userList = DB::table('users')->get();
         $permission_lists = DB::table('permission_lists')->get();
@@ -39,12 +39,12 @@ class EmployeeController extends Controller
     public function saveRecord(Request $request)
     {
         $request->validate([
-            'name'        => 'required|string|max:255',
-            'email'       => 'required|string|email',
-            'birthDate'   => 'required|string|max:255',
-            'gender'      => 'required|string|max:255',
-            'employee_id' => 'required|string|max:255',
-            'company'     => 'required|string|max:255',
+            'name'         => 'required|string|max:255',
+            'email'        => 'required|string|email',
+            'birth_date'   => 'required|string|max:255',
+            'gender'       => 'required|string|max:255',
+            'employee_id'  => 'required|string|max:255',
+            'line_manager' => 'required|string|max:255',
         ]);
 
         DB::beginTransaction();
@@ -57,16 +57,16 @@ class EmployeeController extends Controller
                 $employee = new Employee;
                 $employee->name         = $request->name;
                 $employee->email        = $request->email;
-                $employee->birth_date   = $request->birthDate;
+                $employee->birth_date   = $request->birth_date;
                 $employee->gender       = $request->gender;
                 $employee->employee_id  = $request->employee_id;
-                $employee->company      = $request->company;
+                $employee->line_manager = $request->line_manager;
                 $employee->save();
     
                 for($i=0;$i<count($request->id_count);$i++)
                 {
                     $module_permissions = [
-                        'employee_id' => $request->employee_id,
+                        'employee_id'       => $request->employee_id,
                         'module_permission' => $request->permission[$i],
                         'id_count'          => $request->id_count[$i],
                         'read'              => $request->read[$i],
@@ -84,7 +84,7 @@ class EmployeeController extends Controller
                 return redirect()->route('all/employee/card');
             } else {
                 DB::rollback();
-                flash()->success('Add new employee exits :)');
+                flash()->warning('Add new employee exits :)');
                 return redirect()->back();
             }
         }catch(\Exception $e){
@@ -112,27 +112,27 @@ class EmployeeController extends Controller
 
             // update table Employee
             $updateEmployee = [
-                'id'          => $request->id,
-                'name'        => $request->name,
-                'email'       => $request->email,
-                'birth_date'  => $request->birth_date,
-                'gender'      => $request->gender,
-                'employee_id' => $request->employee_id,
-                'company'     => $request->company,
+                'id'           => $request->id,
+                'name'         => $request->name,
+                'email'        => $request->email,
+                'birth_date'   => $request->birth_date,
+                'gender'       => $request->gender,
+                'employee_id'  => $request->employee_id,
+                'line_manager' => $request->line_manager,
             ];
 
             // update table user
             $updateUser = [
-                'id'=>$request->id,
-                'name'=>$request->name,
-                'email'=>$request->email,
+                'id'    => $request->id,
+                'name'  => $request->name,
+                'email' => $request->email,
             ];
 
             // update table module_permissions
             for($i = 0;$i<count($request->id_permission);$i++)
             {
                 $UpdateModule_permissions = [
-                    'employee_id' => $request->employee_id,
+                    'employee_id'       => $request->employee_id,
                     'module_permission' => $request->permission[$i],
                     'id'                => $request->id_permission[$i],
                     'read'              => $request->read[$i],
@@ -176,12 +176,12 @@ class EmployeeController extends Controller
         }
     }
 
-    /** employee search */
+    /** Employee Search */
     public function employeeSearch(Request $request)
     {
         $users = DB::table('users')
                     ->join('employees','users.user_id','employees.employee_id')
-                    ->select('users.*','employees.birth_date','employees.gender','employees.company')->get();
+                    ->select('users.*','employees.birth_date','employees.gender','employees.line_manager')->get();
         $permission_lists = DB::table('permission_lists')->get();
         $userList = DB::table('users')->get();
 
@@ -190,7 +190,7 @@ class EmployeeController extends Controller
         {
             $users = DB::table('users')
                         ->join('employees','users.user_id','employees.employee_id')
-                        ->select('users.*','employees.birth_date','employees.gender','employees.company')
+                        ->select('users.*','employees.birth_date','employees.gender','employees.line_manager')
                         ->where('employee_id','LIKE','%'.$request->employee_id.'%')->get();
         }
         // search by name
@@ -198,7 +198,7 @@ class EmployeeController extends Controller
         {
             $users = DB::table('users')
                         ->join('employees','users.user_id','employees.employee_id')
-                        ->select('users.*','employees.birth_date','employees.gender','employees.company')
+                        ->select('users.*','employees.birth_date','employees.gender','employees.line_manager')
                         ->where('users.name','LIKE','%'.$request->name.'%')->get();
         }
         // search by name
@@ -206,7 +206,7 @@ class EmployeeController extends Controller
         {
             $users = DB::table('users')
                         ->join('employees','users.user_id','employees.employee_id')
-                        ->select('users.*','employees.birth_date','employees.gender','employees.company')
+                        ->select('users.*','employees.birth_date','employees.gender','employees.line_manager')
                         ->where('users.position','LIKE','%'.$request->position.'%')->get();
         }
 
@@ -215,7 +215,7 @@ class EmployeeController extends Controller
         {
             $users = DB::table('users')
                         ->join('employees','users.user_id','employees.employee_id')
-                        ->select('users.*','employees.birth_date','employees.gender','employees.company')
+                        ->select('users.*','employees.birth_date','employees.gender','employees.line_manager')
                         ->where('employee_id','LIKE','%'.$request->employee_id.'%')
                         ->where('users.name','LIKE','%'.$request->name.'%')
                         ->get();
@@ -225,7 +225,7 @@ class EmployeeController extends Controller
         {
             $users = DB::table('users')
                         ->join('employees','users.user_id','employees.employee_id')
-                        ->select('users.*','employees.birth_date', 'employees.gender', 'employees.company')
+                        ->select('users.*','employees.birth_date', 'employees.gender', 'employees.line_manager')
                         ->where('employee_id','LIKE','%'.$request->employee_id.'%')
                         ->where('users.position','LIKE','%'.$request->position.'%')->get();
         }
@@ -234,7 +234,7 @@ class EmployeeController extends Controller
         {
             $users = DB::table('users')
                         ->join('employees','users.user_id','employees.employee_id')
-                        ->select('users.*','employees.birth_date','employees.gender','employees.company')
+                        ->select('users.*','employees.birth_date','employees.gender','employees.line_manager')
                         ->where('users.name','LIKE','%'.$request->name.'%')
                         ->where('users.position','LIKE','%'.$request->position.'%')->get();
         }
@@ -243,7 +243,7 @@ class EmployeeController extends Controller
         {
             $users = DB::table('users')
                         ->join('employees','users.user_id','employees.employee_id')
-                        ->select('users.*','employees.birth_date','employees.gender','employees.company')
+                        ->select('users.*','employees.birth_date','employees.gender','employees.line_manager')
                         ->where('employee_id','LIKE','%'.$request->employee_id.'%')
                         ->where('users.name','LIKE','%'.$request->name.'%')
                         ->where('users.position','LIKE','%'.$request->position.'%')->get();
@@ -256,7 +256,7 @@ class EmployeeController extends Controller
     {
         $users = DB::table('users')
                     ->join('employees','users.user_id','employees.employee_id')
-                    ->select('users.*','employees.birth_date','employees.gender','employees.company')->get(); 
+                    ->select('users.*','employees.birth_date','employees.gender','employees.line_manager')->get(); 
         $permission_lists = DB::table('permission_lists')->get();
         $userList         = DB::table('users')->get();
 
@@ -265,7 +265,7 @@ class EmployeeController extends Controller
         {
             $users = DB::table('users')
                         ->join('employees','users.user_id','employees.employee_id')
-                        ->select('users.*','employees.birth_date','employees.gender','employees.company')
+                        ->select('users.*','employees.birth_date','employees.gender','employees.line_manager')
                         ->where('employee_id','LIKE','%'.$request->employee_id.'%')->get();
         }
 
@@ -274,7 +274,7 @@ class EmployeeController extends Controller
         {
             $users = DB::table('users')
                         ->join('employees','users.user_id','employees.employee_id')
-                        ->select('users.*','employees.birth_date','employees.gender','employees.company')
+                        ->select('users.*','employees.birth_date','employees.gender','employees.line_manager')
                         ->where('users.name','LIKE','%'.$request->name.'%')->get();
         }
 
@@ -283,7 +283,7 @@ class EmployeeController extends Controller
         {
             $users = DB::table('users')
                         ->join('employees','users.user_id','employees.employee_id')
-                        ->select('users.*','employees.birth_date','employees.gender','employees.company')
+                        ->select('users.*','employees.birth_date','employees.gender','employees.line_manager')
                         ->where('users.position','LIKE','%'.$request->position.'%')->get();
         }
 
@@ -292,7 +292,7 @@ class EmployeeController extends Controller
         {
             $users = DB::table('users')
                         ->join('employees','users.user_id','employees.employee_id')
-                        ->select('users.*','employees.birth_date','employees.gender','employees.company')
+                        ->select('users.*','employees.birth_date','employees.gender','employees.line_manager')
                         ->where('employee_id','LIKE','%'.$request->employee_id.'%')
                         ->where('users.name','LIKE','%'.$request->name.'%')->get();
         }
@@ -302,7 +302,7 @@ class EmployeeController extends Controller
         {
             $users = DB::table('users')
                         ->join('employees','users.user_id','employees.employee_id')
-                        ->select('users.*','employees.birth_date','employees.gender','employees.company')
+                        ->select('users.*','employees.birth_date','employees.gender','employees.line_manager')
                         ->where('employee_id','LIKE','%'.$request->employee_id.'%')
                         ->where('users.position','LIKE','%'.$request->position.'%')->get();
         }
@@ -312,7 +312,7 @@ class EmployeeController extends Controller
         {
             $users = DB::table('users')
                         ->join('employees','users.user_id','employees.employee_id')
-                        ->select('users.*','employees.birth_date','employees.gender','employees.company')
+                        ->select('users.*','employees.birth_date','employees.gender','employees.line_manager')
                         ->where('users.name','LIKE','%'.$request->name.'%')
                         ->where('users.position','LIKE','%'.$request->position.'%')->get();
         }
@@ -322,7 +322,7 @@ class EmployeeController extends Controller
         {
             $users = DB::table('users')
                         ->join('employees','users.user_id','employees.employee_id')
-                        ->select('users.*','employees.birth_date','employees.gender','employees.company')
+                        ->select('users.*','employees.birth_date','employees.gender','employees.line_manager')
                         ->where('employee_id','LIKE','%'.$request->employee_id.'%')
                         ->where('users.name','LIKE','%'.$request->name.'%')
                         ->where('users.position','LIKE','%'.$request->position.'%')->get();

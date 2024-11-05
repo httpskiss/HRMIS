@@ -43,8 +43,9 @@ class LoginController extends Controller
             if (Auth::attempt($credentials)) {
                 $user = Auth::user();
                 Session::put($this->getUserSessionData($user));
-
-                $user->update(['last_login' => Carbon::now()->toDayDateTimeString()]);
+             
+                // Update last login
+                $user->update(['last_login' => Carbon::now()]);
                 
                 flash()->success('Login successfully :)');
                 return redirect()->intended('home');

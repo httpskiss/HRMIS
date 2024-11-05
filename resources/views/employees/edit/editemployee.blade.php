@@ -70,7 +70,7 @@
                                 <div class="form-group row">
                                     <label class="col-form-label col-md-2">Line Manager</label>
                                     <div class="col-md-10">
-                                        <input type="text" class="form-control" id="company" name="company" value="{{ $employees[0]->company }}">
+                                        <input type="text" class="form-control" id="line_manager" name="line_manager" value="{{ $employees[0]->line_manager }}">
                                     </div>
                                 </div>
 

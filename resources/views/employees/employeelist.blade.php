@@ -166,10 +166,12 @@
                                 <div class="col-sm-6">
                                     <div class="form-group">
                                         <label class="col-form-label">Line Manager</label>
-                                        <select class="select" id="company" name="company">
-                                            <option value="">-- Select --</option>
-                                            <option value="Soeng Souy">Soeng Souy</option>
-                                            <option value="StarGame Kh">StarGame Kh</option>
+                                        <select class="select" id="company" name="line_manager">
+                                            <option selected disabled>-- Select --</option>
+                                            @foreach ($userList as $key=>$user )
+                                                <option value="Soeng Souy">Soeng Souy</option>
+                                                <option value="StarGame Kh">StarGame Kh</option>
+                                            @endforeach
                                         </select>
                                     </div>
                                 </div>
@@ -237,7 +239,7 @@
         <!-- /Add Employee Modal -->
     </div>
     <!-- /Page Wrapper -->
-    @section('script')
+@section('script')
     <script>
         $("input:checkbox").on('click', function()
         {
@@ -261,5 +263,5 @@
             $('#email').val($(this).find(':selected').data('email'));
         });
     </script>
-    @endsection
+@endsection
 @endsection

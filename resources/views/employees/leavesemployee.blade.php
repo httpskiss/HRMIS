@@ -58,6 +58,7 @@
                         <table class="table table-striped custom-table mb-0 datatable">
                             <thead>
                                 <tr>
+                                    <th>No</th>
                                     <th>Leave Type</th>
                                     <th>From</th>
                                     <th>To</th>
@@ -69,64 +70,40 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>Casual Leave</td>
-                                    <td>8 Mar 2019</td>
-                                    <td>9 Mar 2019</td>
-                                    <td>2 days</td>
-                                    <td>Going to Hospital</td>
-                                    <td class="text-center">
-                                        <div class="action-label">
-                                            <a class="btn btn-white btn-sm btn-rounded" href="javascript:void(0);">
-                                                <i class="fa fa-dot-circle-o text-purple"></i> New
-                                            </a>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <h2 class="table-avatar">
-                                            <a href="profile.html" class="avatar avatar-xs"><img src="{{URL::to('assets/img/profiles/avatar-09.jpg')}}" alt=""></a>
-                                            <a href="#">Richard Miles</a>
-                                        </h2>
-                                    </td>
-                                    <td class="text-right">
-                                        <div class="dropdown dropdown-action">
-                                            <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="material-icons">more_vert</i></a>
-                                            <div class="dropdown-menu dropdown-menu-right">
-                                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#edit_leave"><i class="fa fa-pencil m-r-5"></i> Edit</a>
-                                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#delete_approve"><i class="fa fa-trash-o m-r-5"></i> Delete</a>
+                                @foreach($getLeave as $key => $leave)
+                                    <tr>
+                                        <td>{{ ++$key}}</td>
+                                        <td>{{ $leave->leave_type }}</td>
+                                        <td>{{ $leave->date_from }}</td>
+                                        <td>{{ $leave->date_to }}</td>
+                                        <td>{{ $leave->number_of_day }} days</td>
+                                        <td>{{ $leave->reason }}</td>
+                                        <td class="text-center">
+                                            <div class="action-label">
+                                                <a class="btn btn-white btn-sm btn-rounded" href="javascript:void(0);">
+                                                    <i class="fa fa-dot-circle-o text-purple"></i> New
+                                                </a>
                                             </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Casual Leave</td>
-                                    <td>10 Jan 2019</td>
-                                    <td>10 Jan 2019</td>
-                                    <td>First Half</td>
-                                    <td>Going to Hospital</td>
-                                    <td class="text-center">
-                                        <div class="action-label">
-                                            <a class="btn btn-white btn-sm btn-rounded" href="javascript:void(0);">
-                                                <i class="fa fa-dot-circle-o text-danger"></i> Declined
-                                            </a>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <h2 class="table-avatar">
-                                            <a href="profile.html" class="avatar avatar-xs"><img src="{{URL::to('assets/img/profiles/avatar-09.jpg')}}" alt=""></a>
-                                            <a href="#">Richard Miles</a>
-                                        </h2>
-                                    </td>
-                                    <td class="text-right">
-                                        <div class="dropdown dropdown-action">
-                                            <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="material-icons">more_vert</i></a>
-                                            <div class="dropdown-menu dropdown-menu-right">
-                                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#edit_leave"><i class="fa fa-pencil m-r-5"></i> Edit</a>
-                                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#delete_approve"><i class="fa fa-trash-o m-r-5"></i> Delete</a>
+                                        </td>
+                                        <td>
+                                            <h2 class="table-avatar">
+                                                <a href="profile.html" class="avatar avatar-xs">
+                                                    <img src="{{URL::to('assets/img/profiles/avatar-09.jpg')}}" alt="">
+                                                </a>
+                                                <a href="#">{{ $leave->approved_by }}</a>
+                                            </h2>
+                                        </td>
+                                        <td class="text-right">
+                                            <div class="dropdown dropdown-action">
+                                                <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="material-icons">more_vert</i></a>
+                                                <div class="dropdown-menu dropdown-menu-right">
+                                                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#edit_leave"><i class="fa fa-pencil m-r-5"></i> Edit</a>
+                                                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#delete_approve"><i class="fa fa-trash-o m-r-5"></i> Delete</a>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </td>
-                                </tr>
+                                        </td>
+                                    </tr>
+                                @endforeach
                             </tbody>
                         </table>
                     </div>
