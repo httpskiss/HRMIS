@@ -132,7 +132,6 @@
                     </div>
                 </div>
             </div>
-              
         </div>
         <!-- /Page Content -->
        
@@ -147,7 +146,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form action="{{ route('form/leaves/save') }}" method="POST">
+                        <form id="applyLeave" action="{{ route('form/leaves/save') }}" method="POST">
                             @csrf
                             <div class="row">
                                 <div class="col-md-6">
@@ -307,6 +306,7 @@
     </div>
     <!-- /Page Wrapper -->
 @section('script')
+    <!-- Calculate Leave  -->
     <script>
         // Define the URL for the AJAX request
         var url = "{{ route('hr/get/information/leave') }}";
@@ -467,5 +467,58 @@
             $('#leave_day_select').hide(); // or reset to its original state
         });
     </script>
+    
+    <!-- Validate Form  -->
+    <script>
+        $(document).ready(function() {
+            $("#applyLeave").validate({
+                rules: {
+                    leave_type: {
+                        required: true,
+                    },
+                    date_from: {
+                        required: true,
+                    },
+                    date_to: {
+                        required: true,
+                    },
+                    reason: {
+                        required: true,
+                    }
+                },
+                messages: {
+                    leave_type: {
+                        required: "Please select leave type",
+                    },
+                    date_from: {
+                        required: "Please select date from"
+                    },
+                    date_to: {
+                        required: "Please select date to"
+                    },
+                    reason: {
+                        required: "Please input reason leave"
+                    }
+                },
+                errorElement: 'span',
+                errorPlacement: function(error, element) {
+                    error.addClass('text-danger');
+                    error.appendTo(element.parent());
+                },
+                submitHandler: function(form) {
+                    form.submit(); // Submit the form if valid
+                }
+            });
+        });
+
+        $('#leave_type').on('change', function() {
+            if ($(this).val()) {
+                $(this).siblings('span.error').hide(); // Hide error if valid
+            } else {
+                $(this).siblings('span.error').show(); // Show error if invalid
+            }
+        });
+    </script>
+        
 @endsection
 @endsection
