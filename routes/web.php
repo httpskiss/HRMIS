@@ -218,17 +218,21 @@ Route::group(['namespace' => 'App\Http\Controllers'],function()
         });
     });
 
-    // ------------------------ form payroll  ----------------------------//
+    // ---------------------------- Form Payroll ---------------------------//
     Route::controller(PayrollController::class)->group(function () {
-        Route::get('form/salary/page', 'salary')->middleware('auth')->name('form/salary/page');
-        Route::post('form/salary/save','saveRecord')->middleware('auth')->name('form/salary/save');
-        Route::post('form/salary/update', 'updateRecord')->middleware('auth')->name('form/salary/update');
-        Route::post('form/salary/delete', 'deleteRecord')->middleware('auth')->name('form/salary/delete');
-        Route::get('form/salary/view/{user_id}', 'salaryView')->middleware('auth');
-        Route::get('form/payroll/items', 'payrollItems')->middleware('auth')->name('form/payroll/items');    
-        Route::get('extra/report/pdf', 'reportPDF')->middleware('auth');    
-        Route::get('extra/report/excel', 'reportExcel')->middleware('auth');    
-    });
+        Route::middleware('auth')->group(function () {
+            Route::prefix('form/salary')->group(function () {
+                Route::get('/page', 'salary')->name('form/salary/page');
+                Route::post('/save','saveRecord')->name('form/salary/save');
+                Route::post('/update', 'updateRecord')->name('form/salary/update');
+                Route::post('/delete', 'deleteRecord')->name('form/salary/delete');
+                Route::get('/view/{user_id}', 'salaryView');
+            });
+            Route::get('form/payroll/items', 'payrollItems')->name('form/payroll/items');    
+            Route::get('extra/report/pdf', 'reportPDF');    
+            Route::get('extra/report/excel', 'reportExcel');    
+        });
+    });    
 
     // ---------------------------- reports  ----------------------------//
     Route::controller(ExpenseReportsController::class)->group(function () {
