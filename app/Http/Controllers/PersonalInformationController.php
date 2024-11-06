@@ -8,7 +8,7 @@ use DB;
 
 class PersonalInformationController extends Controller
 {
-    /** save record */
+    /** Save Record */
     public function saveRecord(Request $request)
     {
         $request->validate([

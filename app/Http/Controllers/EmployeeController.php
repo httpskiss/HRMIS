@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ProfileInformation;
 use App\Models\module_permission;
 use Illuminate\Http\Request;
 use App\Models\department;
@@ -48,13 +49,8 @@ class EmployeeController extends Controller
         ]);
 
         DB::beginTransaction();
-        try{
-
-            $employees = Employee::where('email', '=',$request->email)->first();
-            if ($employees === null)
-            {
-
-                $employee = new Employee;
+        try {
+                $employee = Employee::updateOrCreate(['email' => $request->email]);
                 $employee->name         = $request->name;
                 $employee->email        = $request->email;
                 $employee->birth_date   = $request->birth_date;
@@ -62,9 +58,17 @@ class EmployeeController extends Controller
                 $employee->employee_id  = $request->employee_id;
                 $employee->line_manager = $request->line_manager;
                 $employee->save();
-    
-                for($i=0;$i<count($request->id_count);$i++)
-                {
+
+                $information = ProfileInformation::updateOrCreate(['user_id' => $request->employee_id]);
+                $information->name         = $request->name;
+                $information->user_id      = $request->employee_id;
+                $information->email        = $request->email;
+                $information->birth_date   = $request->birth_date;
+                $information->gender       = $request->gender;
+                $information->reports_to   = $request->line_manager;
+                $information->save();
+
+                for ($i=0;$i<count($request->id_count);$i++) {
                     $module_permissions = [
                         'employee_id'       => $request->employee_id,
                         'module_permission' => $request->permission[$i],
@@ -82,11 +86,7 @@ class EmployeeController extends Controller
                 DB::commit();
                 flash()->success('Add new employee successfully :)');
                 return redirect()->route('all/employee/card');
-            } else {
-                DB::rollback();
-                flash()->warning('Add new employee exits :)');
-                return redirect()->back();
-            }
+            
         }catch(\Exception $e){
             DB::rollback();
             flash()->error('Add new employee fail :)');
@@ -144,6 +144,22 @@ class EmployeeController extends Controller
                 ];
                 module_permission::where('id',$request->id_permission[$i])->update($UpdateModule_permissions);
             }
+
+            $information = ProfileInformation::updateOrCreate(['user_id' => $request->employee_id]);
+            $information->name         = $request->name;
+            $information->user_id      = $request->employee_id;
+            $information->email        = $request->email;
+            $information->birth_date   = $request->birth_date;
+            $information->gender       = $request->gender;
+            $information->reports_to   = $request->line_manager;
+            $information->save();
+
+            $user = User::updateOrCreate(['user_id' => $request->employee_id]);
+            $user->name         = $request->name;
+            $user->user_id      = $request->employee_id;
+            $user->email        = $request->email;
+            $user->line_manager = $request->line_manager;
+            $user->save();
 
             User::where('id',$request->id)->update($updateUser);
             Employee::where('id',$request->id)->update($updateEmployee);
@@ -333,28 +349,29 @@ class EmployeeController extends Controller
     /** Employee profile */
     public function profileEmployee($user_id)
     {
-        $user = DB::table('users') 
-                ->leftJoin('personal_information as pi','pi.user_id','users.user_id')
-                ->leftJoin('profile_information as pr','pr.user_id','users.user_id')
-                ->leftJoin('user_emergency_contacts as ue','ue.user_id','users.user_id')
-                ->select('users.*','pi.passport_no','pi.passport_expiry_date','pi.tel',
-                'pi.nationality','pi.religion','pi.marital_status','pi.employment_of_spouse',
-                'pi.children','pr.birth_date','pr.gender','pr.address','pr.country','pr.state','pr.pin_code',
-                'pr.phone_number','pr.department','pr.designation','pr.reports_to',
-                'ue.name_primary','ue.relationship_primary','ue.phone_primary','ue.phone_2_primary',
-                'ue.name_secondary','ue.relationship_secondary','ue.phone_secondary','ue.phone_2_secondary')
-                ->where('users.user_id',$user_id)->get();
-        $users = DB::table('users')
-                ->leftJoin('personal_information as pi','pi.user_id','users.user_id')
-                ->leftJoin('profile_information as pr','pr.user_id','users.user_id')
-                ->leftJoin('user_emergency_contacts as ue','ue.user_id','users.user_id')
-                ->select('users.*','pi.passport_no','pi.passport_expiry_date','pi.tel',
-                'pi.nationality','pi.religion','pi.marital_status','pi.employment_of_spouse',
-                'pi.children','pr.birth_date','pr.gender','pr.address','pr.country','pr.state','pr.pin_code',
-                'pr.phone_number','pr.department','pr.designation','pr.reports_to',
-                'ue.name_primary','ue.relationship_primary','ue.phone_primary','ue.phone_2_primary',
-                'ue.name_secondary','ue.relationship_secondary','ue.phone_secondary','ue.phone_2_secondary')
-                ->where('users.user_id',$user_id)->first();
+        function getUserDetails($user_id) {
+            return DB::table('users')
+                ->leftJoin('personal_information as pi', 'pi.user_id', 'users.user_id')
+                ->leftJoin('profile_information as pr', 'pr.user_id', 'users.user_id')
+                ->leftJoin('user_emergency_contacts as ue', 'ue.user_id', 'users.user_id')
+                ->select(
+                    'users.*',
+                    'pi.passport_no', 'pi.passport_expiry_date', 'pi.tel',
+                    'pi.nationality', 'pi.religion', 'pi.marital_status',
+                    'pi.employment_of_spouse', 'pi.children',
+                    'pr.birth_date', 'pr.gender', 'pr.address', 'pr.country', 
+                    'pr.state', 'pr.pin_code', 'pr.phone_number', 
+                    'pr.department', 'pr.designation', 'pr.reports_to',
+                    'ue.name_primary', 'ue.relationship_primary', 'ue.phone_primary', 
+                    'ue.phone_2_primary', 'ue.name_secondary', 
+                    'ue.relationship_secondary', 'ue.phone_secondary', 
+                    'ue.phone_2_secondary')
+                ->where('users.user_id', $user_id);
+        }
+
+        // Usage:
+        $user = getUserDetails($user_id)->get();   // For multiple results
+        $users = getUserDetails($user_id)->first(); // For a single result
 
         return view('employees.employeeprofile',compact('user','users'));
     }

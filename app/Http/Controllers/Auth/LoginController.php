@@ -60,20 +60,22 @@ class LoginController extends Controller
         }
     }
 
-    /** Prepare user session data */
+    /** Prepare User Session Data */
     private function getUserSessionData($user)
     {
         return [
-            'name'         => $user->name,
-            'email'        => $user->email,
-            'user_id'      => $user->user_id,
-            'join_date'    => $user->join_date,
-            'phone_number' => $user->phone_number,
-            'status'       => $user->status,
-            'role_name'    => $user->role_name,
-            'avatar'       => $user->avatar,
-            'position'     => $user->position,
-            'department'   => $user->department,
+            'name'                => $user->name,
+            'email'               => $user->email,
+            'user_id'             => $user->user_id,
+            'join_date'           => $user->join_date,
+            'phone_number'        => $user->phone_number,
+            'status'              => $user->status,
+            'role_name'           => $user->role_name,
+            'avatar'              => $user->avatar,
+            'position'            => $user->position,
+            'department'          => $user->department,
+            'line_manager'        => $user->line_manager,
+            'second_line_manager' => $user->second_line_manager,
         ];
     }
 

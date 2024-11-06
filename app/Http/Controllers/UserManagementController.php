@@ -214,16 +214,14 @@ class UserManagementController extends Controller
             {
                 $image_name = $request->hidden_image;
                 $image = $request->file('images');
-                if($image_name =='photo_defaults.jpg')
+                if ($image_name =='photo_defaults.jpg')
                 {
-                    if($image != '')
-                    {
+                    if($image != '') {
                         $image_name = rand() . '.' . $image->getClientOriginalExtension();
                         $image->move(public_path('/assets/images/'), $image_name);
                     }
                 } else {
-                    if($image != '')
-                    {
+                    if($image != '') {
                         $image_name = rand() . '.' . $image->getClientOriginalExtension();
                         $image->move(public_path('/assets/images/'), $image_name);
                         unlink('assets/images/'.Auth::user()->avatar);
@@ -231,8 +229,8 @@ class UserManagementController extends Controller
                 }
                 $update = [
                     'user_id' => $request->user_id,
-                    'name'   => $request->name,
-                    'avatar' => $image_name,
+                    'name'    => $request->name,
+                    'avatar'  => $image_name,
                 ];
                 User::where('user_id',$request->user_id)->update($update);
             } 
@@ -241,7 +239,7 @@ class UserManagementController extends Controller
             $information->name         = $request->name;
             $information->user_id      = $request->user_id;
             $information->email        = $request->email;
-            $information->birth_date   = $request->birthDate;
+            $information->birth_date   = $request->birth_date;
             $information->gender       = $request->gender;
             $information->address      = $request->address;
             $information->state        = $request->state;
@@ -252,6 +250,23 @@ class UserManagementController extends Controller
             $information->designation  = $request->designation;
             $information->reports_to   = $request->reports_to;
             $information->save();
+
+            $employee = Employee::where('employee_id', $request->user_id)->first();
+            if ($employee) {
+                $employee->name         = $request->name;
+                $employee->email        = $request->email;
+                $employee->gender       = $request->gender;
+                $employee->birth_date   = $request->birth_date;
+                $employee->line_manager = $request->reports_to;
+                $employee->save();
+            }
+
+            $user = User::updateOrCreate(['user_id' => $request->user_id]);
+            $user->name         = $request->name;
+            $user->user_id      = $request->user_id;
+            $user->email        = $request->email;
+            $user->line_manager = $request->reports_to;
+            $user->save();
             
             DB::commit();
             flash()->success('Add Profile Information successfully :)');
@@ -313,7 +328,7 @@ class UserManagementController extends Controller
         }
     }
 
-    /** update record */
+    /** Update Record */
     public function update(Request $request)
     {
         DB::beginTransaction();
@@ -380,7 +395,7 @@ class UserManagementController extends Controller
         }
     }
 
-    /** Delete record */
+    /** Delete Record */
     public function delete(Request $request)
     {
         DB::beginTransaction();

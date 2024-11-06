@@ -96,10 +96,10 @@
                                                     <div class="text">
                                                         <div class="avatar-box">
                                                             <div class="avatar avatar-xs">
-                                                                <img src="{{ URL::to('/assets/images/'. $users->avatar) }}" alt="{{ $users->name }}">
+                                                                <img src="{{ URL::to('/assets/images/'. $users->avatar) }}" alt="">
                                                             </div>
                                                         </div>
-                                                        <a>{{ $users->name }}</a>
+                                                        <a>{{ $users->line_manager }}</a>
                                                     </div>
                                                 </li> 
                                             </ul>
@@ -929,9 +929,9 @@
                                                 <label>Birth Date</label>
                                                 <div class="cal-icon">
                                                     @if(!empty($users))
-                                                        <input class="form-control datetimepicker" type="text" id="birthDate" name="birthDate" value="{{ $users->birth_date }}">
+                                                        <input class="form-control datetimepicker" type="text" id="birth_date" name="birth_date" value="{{ $users->birth_date }}">
                                                     @else
-                                                        <input class="form-control datetimepicker" type="text" id="birthDate" name="birthDate">
+                                                        <input class="form-control datetimepicker" type="text" id="birth_date" name="birth_date">
                                                     @endif
                                                 </div>
                                             </div>

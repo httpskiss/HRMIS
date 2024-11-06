@@ -84,11 +84,11 @@
                                                         <div class="text">
                                                             <div class="avatar-box">
                                                                 <div class="avatar avatar-xs">
-                                                                    <img src="{{ URL::to('/assets/images/'. Auth::user()->avatar) }}" alt="{{ Auth::user()->name }}">
+                                                                    <img src="{{ URL::to('/assets/images/'. Auth::user()->avatar) }}" alt="">
                                                                 </div>
                                                             </div>
                                                             <a href="#">
-                                                                {{ Auth::user()->name }}
+                                                                {{ Auth::user()->line_manager }}
                                                             </a>
                                                         </div>
                                                     </li>
@@ -110,11 +110,11 @@
                                                         <div class="text">
                                                             <div class="avatar-box">
                                                                 <div class="avatar avatar-xs">
-                                                                    <img src="{{ URL::to('/assets/images/'. Auth::user()->avatar) }}" alt="{{ Auth::user()->name }}">
+                                                                    <img src="{{ URL::to('/assets/images/'. Auth::user()->avatar) }}" alt="">
                                                                 </div>
                                                             </div>
                                                             <a href="#">
-                                                                {{ Auth::user()->name }}
+                                                                {{ Auth::user()->line_manager }}
                                                             </a>
                                                         </div>
                                                     </li>
@@ -972,7 +972,7 @@
                                             <div class="form-group">
                                                 <label>Birth Date</label>
                                                 <div class="cal-icon">
-                                                    <input class="form-control datetimepicker" type="text" id="birthDate" name="birthDate" value="{{ $information->birth_date }}">
+                                                    <input class="form-control datetimepicker" type="text" id="birth_date" name="birth_date" value="{{ $information->birth_date }}">
                                                 </div>
                                             </div>
                                         </div>
@@ -1100,7 +1100,7 @@
                                             <div class="form-group">
                                                 <label>Birth Date</label>
                                                 <div class="cal-icon">
-                                                    <input class="form-control datetimepicker" type="text" id="birthDate" name="birthDate">
+                                                    <input class="form-control datetimepicker" type="text" id="birth_date" name="birth_date">
                                                 </div>
                                             </div>
                                         </div>
@@ -1870,32 +1870,32 @@
     <!-- /Page Content -->
     </div>
     @section('script')
-    <script>
-        $('#validation').validate({  
-            rules: {  
-                name_primary: 'required',  
-                relationship_primary: 'required',  
-                phone_primary: 'required',  
-                phone_2_primary: 'required',  
-                name_secondary: 'required',  
-                relationship_secondary: 'required',  
-                phone_secondary: 'required',  
-                phone_2_secondary: 'required',  
-            },  
-            messages: {
-                name_primary: 'Please input name primary',  
-                relationship_primary: 'Please input relationship primary',  
-                phone_primary: 'Please input phone primary',  
-                phone_2_primary: 'Please input phone 2 primary',  
-                name_secondary: 'Please input name secondary',  
-                relationship_secondary: 'Please input relationship secondary',  
-                phone_secondaryr: 'Please input phone secondary',  
-                phone_2_secondary: 'Please input phone 2 secondary',  
-            },  
-            submitHandler: function(form) {  
-                form.submit();
-            }  
-        });  
-    </script>
+        <script>
+            $('#validation').validate({  
+                rules: {  
+                    name_primary: 'required',  
+                    relationship_primary: 'required',  
+                    phone_primary: 'required',  
+                    phone_2_primary: 'required',  
+                    name_secondary: 'required',  
+                    relationship_secondary: 'required',  
+                    phone_secondary: 'required',  
+                    phone_2_secondary: 'required',  
+                },  
+                messages: {
+                    name_primary: 'Please input name primary',  
+                    relationship_primary: 'Please input relationship primary',  
+                    phone_primary: 'Please input phone primary',  
+                    phone_2_primary: 'Please input phone 2 primary',  
+                    name_secondary: 'Please input name secondary',  
+                    relationship_secondary: 'Please input relationship secondary',  
+                    phone_secondaryr: 'Please input phone secondary',  
+                    phone_2_secondary: 'Please input phone 2 secondary',  
+                },  
+                submitHandler: function(form) {  
+                    form.submit();
+                }  
+            });  
+        </script>
     @endsection
 @endsection

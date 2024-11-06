@@ -71,6 +71,10 @@
                             </thead>
                             <tbody>
                                 @foreach($getLeave as $key => $leave)
+                                    @php // get photo from the table users
+                                        $profiles = DB::table('users')->where('name', $leave->approved_by)->get();
+                                    @endphp
+
                                     <tr>
                                         <td>{{ ++$key}}</td>
                                         <td>{{ $leave->leave_type }}</td>
@@ -81,17 +85,19 @@
                                         <td class="text-center">
                                             <div class="action-label">
                                                 <a class="btn btn-white btn-sm btn-rounded" href="javascript:void(0);">
-                                                    <i class="fa fa-dot-circle-o text-purple"></i> New
+                                                    <i class="fa fa-dot-circle-o text-warning"></i> Pending
                                                 </a>
                                             </div>
                                         </td>
                                         <td>
-                                            <h2 class="table-avatar">
-                                                <a href="profile.html" class="avatar avatar-xs">
-                                                    <img src="{{URL::to('assets/img/profiles/avatar-09.jpg')}}" alt="">
-                                                </a>
-                                                <a href="#">{{ $leave->approved_by }}</a>
-                                            </h2>
+                                            @foreach($profiles as $key => $profile)
+                                                <h2 class="table-avatar">
+                                                    <a href="profile.html" class="avatar avatar-xs">
+                                                        <img src="{{ URL::to('/assets/images/'.$profile->avatar) }}" alt="">
+                                                    </a>
+                                                    <a href="#">{{ $leave->approved_by }}</a>
+                                                </h2>
+                                            @endforeach
                                         </td>
                                         <td class="text-right">
                                             <div class="dropdown dropdown-action">
