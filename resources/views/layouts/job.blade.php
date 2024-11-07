@@ -56,6 +56,7 @@
 		<!-- Datetimepicker JS -->
 		<script src="{{ URL::to('assets/js/moment.min.js') }}"></script>
 		<script src="{{ URL::to('assets/js/bootstrap-datetimepicker.min.js') }}"></script>
+
 		<!-- validation-->
 		<script src="{{ URL::to('assets/js/jquery.validate.js') }}"></script>
 		<!-- Custom JS -->
