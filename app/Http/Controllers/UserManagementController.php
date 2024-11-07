@@ -35,7 +35,7 @@ class UserManagementController extends Controller
         }
     }
 
-    /** Get list data and search */
+    /** Get List Data And Search */
     public function getUsersData(Request $request) 
     {
         $draw            = $request->get('draw');
@@ -54,7 +54,7 @@ class UserManagementController extends Controller
         $users =  DB::table('users');
         $totalRecords = $users->count();
 
-        /** search*/
+        // Search
         $filters = [
             'name'      => $request->user_name,
             'role_name' => $request->type_role,
@@ -83,19 +83,16 @@ class UserManagementController extends Controller
         $totalRecordsWithFilter = $users->where(function ($query) use ($searchValue, $searchColumns) {
             foreach ($searchColumns as $column) {
                 $query->orWhere($column, 'like', '%' . $searchValue . '%');
-            }
-            })->count();
+            }})->count();
         
         // Retrieve filtered and sorted records
         $records = $users->orderBy($columnName, $columnSortOrder)
             ->where(function ($query) use ($searchValue, $searchColumns) {
-                foreach ($searchColumns as $column) {
-                    $query->orWhere($column, 'like', '%' . $searchValue . '%');
-                }
-            })->skip($start)->take($rowPerPage)->get();
+            foreach ($searchColumns as $column) {
+                $query->orWhere($column, 'like', '%' . $searchValue . '%');
+            }})->skip($start)->take($rowPerPage)->get();
         
         $data_arr = [];
-        
         $roleBadges = [
             'Admin'       => 'bg-inverse-danger',
             'Super Admin' => 'bg-inverse-warning',
@@ -120,9 +117,7 @@ class UserManagementController extends Controller
                     </a>
                 </h2>';
             
-            $role_name = isset($roleBadges[$record->role_name])
-                ? '<span class="badge '.$roleBadges[$record->role_name].' role_name">'.$record->role_name.'</span>'
-                : 'NULL';
+            $role_name = isset($roleBadges[$record->role_name]) ? '<span class="badge '.$roleBadges[$record->role_name].' role_name">'.$record->role_name.'</span>' : 'NULL';
         
             $full_status = '
                 <div class="dropdown-menu dropdown-menu-right">
@@ -442,13 +437,13 @@ class UserManagementController extends Controller
         }
     }
 
-    /** view change password */
+    /** View Change Password */
     public function changePasswordView()
     {
         return view('settings.changepassword');
     }
     
-    /** change password in db */
+    /** Change Password User */
     public function changePasswordDB(Request $request)
     {
         $request->validate([
@@ -478,7 +473,7 @@ class UserManagementController extends Controller
         }
     }
 
-    /** user profile Emergency Contact */
+    /** User Profile Emergency Contact */
     public function emergencyContactSaveOrUpdate(Request $request)
     {
         // Validate form input

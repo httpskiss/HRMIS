@@ -26,7 +26,6 @@ class LeavesController extends Controller
 
             $numberOfDay = $request->number_of_day;
             $leaveType   = $request->leave_type;
-            
             $leaveDay = LeaveInformation::where('leave_type', $leaveType)->first();
             
             if ($leaveDay) {
@@ -34,7 +33,7 @@ class LeavesController extends Controller
             } else {
                 $days = 0; // Handle case if leave type doesn't exist
             }
-            
+
             $data = [
                 'response_code' => 200,
                 'status'        => 'success',
