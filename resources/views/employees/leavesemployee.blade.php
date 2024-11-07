@@ -120,7 +120,7 @@
        
 		<!-- Add Leave Modal -->
         <div id="add_leave" class="modal custom-modal fade" role="dialog">
-            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">Add Leave</h5>
@@ -157,7 +157,7 @@
                                     <div class="form-group">
                                         <label>From <span class="text-danger">*</span></label>
                                         <div class="cal-icon">
-                                            <input type="text" class="form-control datetimepicker-cus" id="date_from" name="date_from">
+                                            <input type="text" class="form-control datetimepicker-cus" id="date_from" name="date_from" autocomplete="off">
                                         </div>
                                     </div>
                                 </div>
@@ -165,7 +165,7 @@
                                     <div class="form-group">
                                         <label>To <span class="text-danger">*</span></label>
                                         <div class="cal-icon">
-                                            <input type="text" class="form-control datetimepicker-cus" id="date_to" name="date_to">
+                                            <input type="text" class="form-control datetimepicker-cus" id="date_to" name="date_to" autocomplete="off">
                                         </div>
                                     </div>
                                 </div>
@@ -199,7 +199,7 @@
                             </div>
                            
                             <div class="submit-section">
-                                <button type="submit" class="btn btn-primary submit-btn">Submit</button>
+                                <button type="submit" id="apply_leave" class="btn btn-primary submit-btn">Submit</button>
                             </div>
                         </form>
                     </div>
@@ -422,9 +422,12 @@
             }, function(data) {
                 if (data.response_code == 200) {
                     $('#remaining_leave').val(data.leave_type);
-                    $('#apply_leave').prop('disabled', data.leave_type <= 0);
-                    if (data.leave_type < 0) {
+                    $('#apply_leave').prop('disabled', data.leave_type < 0);
+
+                    // Show the alert only once if leave type is less than 0
+                    if (data.leave_type < 0 && !$('#apply_leave').data('alerted')) {
                         toastr.info('You cannot apply for leave at this time.');
+                        $('#apply_leave').data('alerted', true);
                     }
                 }
             }, 'json');
