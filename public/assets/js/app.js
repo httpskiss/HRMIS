@@ -132,10 +132,10 @@ $(document).ready(function() {
 		$pageWrapper.css('min-height', prHeight);
 	});
 	
-	// Date Time Picker 01-01-2025
+	//Date Time Picker 01-Jun-2025
 	if($('.datetimepicker').length > 0) {
 		$('.datetimepicker').datetimepicker({
-			format: 'DD-MM-YYYY',
+			format: 'DD MMM, YYYY',
 			icons: {
 				up: "fa fa-angle-up",
 				down: "fa fa-angle-down",
@@ -145,15 +145,6 @@ $(document).ready(function() {
 		});
 	}
 
-	//Date Time Picker 01-Jun-2025
-	if($('.datetimepicker').length > 0) {
-		$(document).ready(function() {
-			$('.datetimepicker-cus').datetimepicker({
-				format: 'DD MMM, YYYY'
-			});
-		});
-	}
-	
 	// Datatable
 	if($('.datatable').length > 0) {
 		$('.datatable').DataTable({

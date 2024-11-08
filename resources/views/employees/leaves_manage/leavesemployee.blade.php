@@ -103,7 +103,7 @@
                                             <div class="dropdown dropdown-action">
                                                 <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="material-icons">more_vert</i></a>
                                                 <div class="dropdown-menu dropdown-menu-right">
-                                                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#edit_leave"><i class="fa fa-pencil m-r-5"></i> Edit</a>
+                                                    <a class="dropdown-item edit_eave" href="#" data-toggle="modal" data-target="#edit_leave"><i class="fa fa-pencil m-r-5"></i> Edit</a>
                                                     <a class="dropdown-item" href="#" data-toggle="modal" data-target="#delete_approve"><i class="fa fa-trash-o m-r-5"></i> Delete</a>
                                                 </div>
                                             </div>
@@ -120,7 +120,7 @@
        
 		<!-- Add Leave Modal -->
         <div id="add_leave" class="modal custom-modal fade" role="dialog">
-            <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">Add Leave</h5>
@@ -157,7 +157,7 @@
                                     <div class="form-group">
                                         <label>From <span class="text-danger">*</span></label>
                                         <div class="cal-icon">
-                                            <input type="text" class="form-control datetimepicker-cus" id="date_from" name="date_from" autocomplete="off">
+                                            <input type="text" class="form-control datetimepicker" id="date_from" name="date_from" autocomplete="off">
                                         </div>
                                     </div>
                                 </div>
@@ -165,7 +165,7 @@
                                     <div class="form-group">
                                         <label>To <span class="text-danger">*</span></label>
                                         <div class="cal-icon">
-                                            <input type="text" class="form-control datetimepicker-cus" id="date_to" name="date_to" autocomplete="off">
+                                            <input type="text" class="form-control datetimepicker" id="date_to" name="date_to" autocomplete="off">
                                         </div>
                                     </div>
                                 </div>
@@ -210,7 +210,7 @@
         
         <!-- Edit Leave Modal -->
         <div id="edit_leave" class="modal custom-modal fade" role="dialog">
-            <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">Edit Leave</h5>
@@ -220,36 +220,70 @@
                     </div>
                     <div class="modal-body">
                         <form>
-                            <div class="form-group">
-                                <label>Leave Type <span class="text-danger">*</span></label>
-                                <select class="select">
-                                    <option>Select Leave Type</option>
-                                    <option>Casual Leave 12 Days</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>From <span class="text-danger">*</span></label>
-                                <div class="cal-icon">
-                                    <input class="form-control datetimepicker" value="01-01-2019" type="text">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Leave Type <span class="text-danger">*</span></label>
+                                        <select class="select">
+                                            <option value="Medical Leave">Medical Leave</option>
+                                            <option value="Casual Leave">Casual Leave</option>
+                                            <option value="Sick Leave">Sick Leave</option>
+                                            <option value="Annual Leave">Annual Leave</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <div class="form-group">
+                                            <label>Remaining Leaves <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" id="remaining_leave" name="remaining_leave" readonly value="0">
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <label>To <span class="text-danger">*</span></label>
-                                <div class="cal-icon">
-                                    <input class="form-control datetimepicker" value="01-01-2019" type="text">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>From <span class="text-danger">*</span></label>
+                                        <div class="cal-icon">
+                                            <input type="text" class="form-control datetimepicker" id="" name="date_from" autocomplete="off">
+                                        </div>
+                                    </div>
                                 </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>To <span class="text-danger">*</span></label>
+                                        <div class="cal-icon">
+                                            <input type="text" class="form-control datetimepicker" id="" name="date_to" autocomplete="off">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>  
+                            <div class="row">
+                                <div class="col-md-6" id="leave_dates_display" style="display: none"></div>
+                                <div class="col-md-6" id="select_leave_day" style="display: none"></div>
                             </div>
                             <div class="form-group">
                                 <label>Number of days <span class="text-danger">*</span></label>
-                                <input class="form-control" readonly type="text" value="2">
+                                <input type="text" class="form-control" id="number_of_day" name="number_of_day" value="0" readonly>
                             </div>
-                            <div class="form-group">
-                                <label>Remaining Leaves <span class="text-danger">*</span></label>
-                                <input class="form-control" readonly value="12" type="text">
+                            <div class="row">
+                                <div id="leave_day_select" class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Leave Day <span class="text-danger">*</span></label>
+                                        <select class="select" name="select_leave_day[]" id="leave_day">
+                                            <option value="Full-Day Leave">Full-Day Leave</option>
+                                            <option value="Half-Day Morning Leave">Half-Day Morning Leave</option>
+                                            <option value="Half-Day Afternoon Leave">Half-Day Afternoon Leave</option>
+                                            <option value="Public Holiday">Public Holiday</option>
+                                            <option value="Off Schedule">Off Schedule</option>
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
                             <div class="form-group">
                                 <label>Leave Reason <span class="text-danger">*</span></label>
-                                <textarea rows="4" class="form-control">Going to hospital</textarea>
+                                <textarea rows="2" class="form-control">Going to hospital</textarea>
                             </div>
                             <div class="submit-section">
                                 <button class="btn btn-primary submit-btn">Save</button>
@@ -453,7 +487,7 @@
             $('#leave_day_select').hide(); // or reset to its original state
         });
     </script>
-    
+
     <!-- Validate Form  -->
     <script>
         $(document).ready(function() {
@@ -503,6 +537,16 @@
             } else {
                 $(this).siblings('span.error').show(); // Show error if invalid
             }
+        });
+    </script>
+
+    <!-- Edit Leave  -->
+    <script>
+        $(document).on('click','.edit_eave',function()
+        {
+            var _this = $(this).parents('tr');
+            $('#e_id').val(_this.find('.id').text());
+            $('#holidayName_edit').val(_this.find('.holidayName').text());
         });
     </script>
         

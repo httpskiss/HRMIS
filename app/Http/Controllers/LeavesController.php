@@ -16,7 +16,7 @@ class LeavesController extends Controller
     public function leaves()
     {
         $leaves = DB::table('leaves_admins')->join('users', 'users.user_id','leaves_admins.user_id')->select('leaves_admins.*', 'users.position','users.name','users.avatar')->get();
-        return view('employees.leaves',compact('leaves'));
+        return view('employees.leaves_manage.leaves',compact('leaves'));
     }
 
     /** Get Information Leave */
@@ -58,6 +58,16 @@ class LeavesController extends Controller
         $leave = new Leave();
         // Call the applyLeave method
         return $leave->applyLeave($request);
+    }
+
+    /** Edit Leave */
+    public function editLeave($staff_id)
+    {
+        $leaveInformation = LeaveInformation::all();
+        $leaveDetail = Leave::where('staff_id', $staff_id)->first();
+        $leaveDate   = json_decode($leaveDetail->leave_date, true); // Decode JSON to array
+        $leaveDay    = json_decode($leaveDetail->leave_day, true); // Decode JSON to array
+        return view('employees.leaves_manage.leavesemployee',compact('leaveInformation','leaveDetail','leaveDate','leaveDay'));
     }
 
     /** Edit Record */
@@ -108,7 +118,7 @@ class LeavesController extends Controller
     /** Leave Settings Page */
     public function leaveSettings()
     {
-        return view('employees.leavesettings');
+        return view('employees.leaves_manage.leavesettings');
     }
 
     /** Attendance Admin */
@@ -128,7 +138,8 @@ class LeavesController extends Controller
     {
         $leaveInformation = LeaveInformation::all();
         $getLeave = Leave::where('staff_id', Session::get('user_id'))->get();
-        return view('employees.leavesemployee',compact('leaveInformation', 'getLeave'));
+
+        return view('employees.leaves_manage.leavesemployee',compact('leaveInformation', 'getLeave'));
     }
 
     /** Shift Scheduling */
