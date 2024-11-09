@@ -60,9 +60,13 @@
                                 <tr>
                                     <th>No</th>
                                     <th>Leave Type</th>
+                                    <th hidden>Remaining Leaves</th>
                                     <th>From</th>
                                     <th>To</th>
                                     <th>No of Days</th>
+                                    <th hidden>No of Days</th>
+                                    <th hidden>Leave Date</th>
+                                    <th hidden>Leave Day</th>
                                     <th>Reason</th>
                                     <th class="text-center">Status</th>
                                     <th>Approved by</th>
@@ -72,16 +76,19 @@
                             <tbody>
                                 @foreach($getLeave as $key => $leave)
                                     @php // get photo from the table users
-                                        $profiles = DB::table('users')->where('name', $leave->approved_by)->get();
+                                        $profiles  = DB::table('users')->where('name', $leave->approved_by)->get();
                                     @endphp
-
                                     <tr>
                                         <td>{{ ++$key}}</td>
-                                        <td>{{ $leave->leave_type }}</td>
-                                        <td>{{ $leave->date_from }}</td>
-                                        <td>{{ $leave->date_to }}</td>
+                                        <td class="leave_type">{{ $leave->leave_type }}</td>
+                                        <td hidden class="remaining_leave">{{ $leave->remaining_leave }}</td>
+                                        <td class="date_from">{{ $leave->date_from }}</td>
+                                        <td class="date_to">{{ $leave->date_to }}</td>
                                         <td>{{ $leave->number_of_day }} days</td>
-                                        <td>{{ $leave->reason }}</td>
+                                        <td hidden class="number_of_day">{{ $leave->number_of_day }}</td>
+                                        <td hidden class="leave_date">{{ $leave->leave_date }}</td>
+                                        <td hidden class="leave_day">{{ $leave->leave_day }}</td>
+                                        <td class="reason">{{ $leave->reason }}</td>
                                         <td class="text-center">
                                             <div class="action-label">
                                                 <a class="btn btn-white btn-sm btn-rounded" href="javascript:void(0);">
@@ -137,10 +144,11 @@
                                         <label>Leave Type <span class="text-danger">*</span></label>
                                         <select class="select" id="leave_type" name="leave_type">
                                             <option selected disabled>Select Leave Type</option>
-                                            <option value="Medical Leave">Medical Leave</option>
-                                            <option value="Casual Leave">Casual Leave</option>
-                                            <option value="Sick Leave">Sick Leave</option>
-                                            <option value="Annual Leave">Annual Leave</option>
+                                            @foreach($leaveInformation as $key => $leaves)
+                                                @if($leaves->leave_type != 'Total Leave Balance' && $leaves->leave_type != 'Use Leave' && $leaves->leave_type != 'Remaining Leave')   
+                                                    <option value="{{ $leaves->leave_type }}">{{ $leaves->leave_type }}</option>
+                                                @endif
+                                            @endforeach
                                         </select>
                                     </div>
                                 </div>
@@ -224,11 +232,12 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Leave Type <span class="text-danger">*</span></label>
-                                        <select class="select">
-                                            <option value="Medical Leave">Medical Leave</option>
-                                            <option value="Casual Leave">Casual Leave</option>
-                                            <option value="Sick Leave">Sick Leave</option>
-                                            <option value="Annual Leave">Annual Leave</option>
+                                        <select class="select" id="e_leave_type">
+                                            @foreach($leaveInformation as $key => $leaves)
+                                                @if($leaves->leave_type != 'Total Leave Balance' && $leaves->leave_type != 'Use Leave' && $leaves->leave_type != 'Remaining Leave')   
+                                                    <option value="{{ $leaves->leave_type }}">{{ $leaves->leave_type }}</option>
+                                                @endif
+                                            @endforeach
                                         </select>
                                     </div>
                                 </div>
@@ -236,7 +245,7 @@
                                     <div class="form-group">
                                         <div class="form-group">
                                             <label>Remaining Leaves <span class="text-danger">*</span></label>
-                                            <input type="text" class="form-control" id="remaining_leave" name="remaining_leave" readonly value="0">
+                                            <input type="text" class="form-control" id="e_remaining_leave" name="remaining_leave" readonly>
                                         </div>
                                     </div>
                                 </div>
@@ -246,7 +255,7 @@
                                     <div class="form-group">
                                         <label>From <span class="text-danger">*</span></label>
                                         <div class="cal-icon">
-                                            <input type="text" class="form-control datetimepicker" id="" name="date_from" autocomplete="off">
+                                            <input type="text" class="form-control datetimepicker" id="e_date_from" name="date_from" autocomplete="off">
                                         </div>
                                     </div>
                                 </div>
@@ -254,36 +263,22 @@
                                     <div class="form-group">
                                         <label>To <span class="text-danger">*</span></label>
                                         <div class="cal-icon">
-                                            <input type="text" class="form-control datetimepicker" id="" name="date_to" autocomplete="off">
+                                            <input type="text" class="form-control datetimepicker" id="e_date_to" name="date_to" autocomplete="off">
                                         </div>
                                     </div>
                                 </div>
                             </div>  
                             <div class="row">
-                                <div class="col-md-6" id="leave_dates_display" style="display: none"></div>
-                                <div class="col-md-6" id="select_leave_day" style="display: none"></div>
+                                <div class="col-md-6" id="e_leave_dates_display" style="display: block"></div>
+                                <div class="col-md-6" id="e_select_leave_day" style="display: block"></div>
                             </div>
                             <div class="form-group">
                                 <label>Number of days <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="number_of_day" name="number_of_day" value="0" readonly>
-                            </div>
-                            <div class="row">
-                                <div id="leave_day_select" class="col-md-12">
-                                    <div class="form-group">
-                                        <label>Leave Day <span class="text-danger">*</span></label>
-                                        <select class="select" name="select_leave_day[]" id="leave_day">
-                                            <option value="Full-Day Leave">Full-Day Leave</option>
-                                            <option value="Half-Day Morning Leave">Half-Day Morning Leave</option>
-                                            <option value="Half-Day Afternoon Leave">Half-Day Afternoon Leave</option>
-                                            <option value="Public Holiday">Public Holiday</option>
-                                            <option value="Off Schedule">Off Schedule</option>
-                                        </select>
-                                    </div>
-                                </div>
+                                <input type="text" class="form-control" id="e_number_of_day" name="number_of_day" readonly>
                             </div>
                             <div class="form-group">
                                 <label>Leave Reason <span class="text-danger">*</span></label>
-                                <textarea rows="2" class="form-control">Going to hospital</textarea>
+                                <textarea rows="2" class="form-control" id="e_reason"></textarea>
                             </div>
                             <div class="submit-section">
                                 <button class="btn btn-primary submit-btn">Save</button>
@@ -545,8 +540,67 @@
         $(document).on('click','.edit_eave',function()
         {
             var _this = $(this).parents('tr');
-            $('#e_id').val(_this.find('.id').text());
-            $('#holidayName_edit').val(_this.find('.holidayName').text());
+            $('#e_leave_type').val(_this.find('.leave_type').text()).change();
+            $('#e_remaining_leave').val(_this.find('.remaining_leave').text());
+            $('#e_date_from').val(_this.find('.date_from').text());
+            $('#e_date_to').val(_this.find('.date_to').text());
+            $('#e_number_of_day').val(_this.find('.number_of_day').text());
+            $('#e_reason').val(_this.find('.reason').text());
+
+            // Function to create HTML for leave dates and leave days and append to respective elements
+            function appendLeaveData(targetSelectorDate, targetSelectorDay, leaveDateArray, leaveDayArray) {
+                let htmlDateContent = '';
+                let htmlDayContent = '';
+                let count = 1; // Counter to keep track of leave days
+
+                // Loop through both arrays simultaneously
+                for (let i = 0; i < leaveDateArray.length; i++) {
+                    const leaveDate = leaveDateArray[i];
+                    const leaveDay = leaveDayArray[i];
+
+                    // For Leave Dates
+                    htmlDateContent += `
+                        <div class="form-group">
+                            <label><span class="text-danger">Leave Date ${count}</span></label>
+                            <div class="cal-icon">
+                                <input type="text" class="form-control" id="leave_date_${i}" name="leave_date[]" value="${leaveDate}" readonly>
+                            </div>
+                        </div>
+                    `;
+
+                    // For Leave Days (Select Dropdown)
+                    htmlDayContent += `
+                        <div class="form-group">
+                            <label><span class="text-danger">Leave Day ${count}</span></label>
+                            <select class="select" name="select_leave_day[]" id="leave_day_${i}">
+                                <option value="${leaveDay}" selected>${leaveDay}</option>
+                                <option value="Full-Day Leave">Full-Day Leave</option>
+                                <option value="Half-Day Morning Leave">Half-Day Morning Leave</option>
+                                <option value="Half-Day Afternoon Leave">Half-Day Afternoon Leave</option>
+                                <option value="Public Holiday">Public Holiday</option>
+                                <option value="Off Schedule">Off Schedule</option>
+                            </select>
+                        </div>
+                    `;
+                    
+                    count++; // Increment counter after each iteration
+                }
+
+                // Append generated HTML to target elements
+                $(targetSelectorDate).html(htmlDateContent);
+                $(targetSelectorDay).html(htmlDayContent);
+            }
+
+            // Example of parsing JSON strings (if you already have the text in JSON format)
+            var leaveDateJson = _this.find('.leave_date').text();
+            var leaveDayJson = _this.find('.leave_day').text();
+
+            var leaveDateArray = JSON.parse(leaveDateJson); // Parse to array
+            var leaveDayArray = JSON.parse(leaveDayJson);   // Parse to array
+
+            // Append the data to the respective sections (for leave dates and leave days)
+            appendLeaveData('#e_leave_dates_display', '#e_select_leave_day', leaveDateArray, leaveDayArray);
+
         });
     </script>
         

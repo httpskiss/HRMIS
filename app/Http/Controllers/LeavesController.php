@@ -13,10 +13,10 @@ use DB;
 class LeavesController extends Controller
 {
     /** Leaves Admin Page */
-    public function leaves()
+    public function leavesAdmin()
     {
         $leaves = DB::table('leaves_admins')->join('users', 'users.user_id','leaves_admins.user_id')->select('leaves_admins.*', 'users.position','users.name','users.avatar')->get();
-        return view('employees.leaves_manage.leaves',compact('leaves'));
+        return view('employees.leaves_manage.leavesadmin',compact('leaves'));
     }
 
     /** Get Information Leave */
