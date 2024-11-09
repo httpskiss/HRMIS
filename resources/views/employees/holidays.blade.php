@@ -9,7 +9,7 @@
             <div class="page-header">
                 <div class="row align-items-center">
                     <div class="col">
-                        <h3 class="page-title">Holidays <span id="year"></span></h3>
+                        <h3 class="page-title">Holidays <span>{{ date('Y') }}</span></h3>
                         <ul class="breadcrumb">
                             <li class="breadcrumb-item"><a href="{{ route('home') }}">Dashboard</a></li>
                             <li class="breadcrumb-item active">Holidays</li>
@@ -49,7 +49,6 @@
                                             <td>{{ $items->name_holiday }}</td>
                                             <td>{{date('d F, Y',strtotime($items->date_holiday)) }}</td>
                                             <td>{{date('l',strtotime($items->date_holiday)) }}</td>
-                                            <td></td>
                                         </tr>
                                     @endif
                                 @endforeach
@@ -176,16 +175,11 @@
                 </div>
             </div>
         </div>
-
         <!-- /Delete Holiday Modal -->
-       
     </div>
     <!-- /Page Wrapper -->
-    @section('script')
-    <script>
-        document.getElementById("year").innerHTML = new Date().getFullYear();
-    </script>
-    {{-- update js --}}
+@section('script')
+    <!-- Update -->
     <script>
         $(document).on('click','.userUpdate',function()
         {
@@ -196,14 +190,13 @@
         });
     </script>
 
-     {{-- delete model --}}
-     <script>
+    <!-- Delete -->
+    <script>
         $(document).on('click','.deleteRecord',function()
         {
             var _this = $(this).parents('tr');
             $('.e_id').val(_this.find('.id').text());
         });
     </script>
-    @endsection
-
+@endsection
 @endsection
