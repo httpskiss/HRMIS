@@ -425,7 +425,6 @@
                             // Event listener for leave day selection change
                             $(document).on('change', '[id^="leave_day"]', updateLeaveDaysAndRemaining);
 
-
                             // Initial setup
                             updateLeaveDaysAndRemaining();
                         } else {
@@ -452,11 +451,12 @@
                 if (data.response_code == 200) {
                     $('#remaining_leave').val(data.leave_type);
                     $('#apply_leave').prop('disabled', data.leave_type < 0);
-
                     // Show the alert only once if leave type is less than 0
                     if (data.leave_type < 0 && !$('#apply_leave').data('alerted')) {
                         toastr.info('You cannot apply for leave at this time.');
                         $('#apply_leave').data('alerted', true);
+                    } else if (numDays < 1) {
+                        $('#apply_leave').prop('disabled', true);
                     }
                 }
             }, 'json');
@@ -537,27 +537,28 @@
 
     <!-- Edit Leave  -->
     <script>
-        $(document).on('click','.edit_eave',function()
-        {
+        $(document).on('click', '.edit_eave', function() {
             var _this = $(this).parents('tr');
+            
+            // Populate existing data into form fields
             $('#e_leave_type').val(_this.find('.leave_type').text()).change();
             $('#e_remaining_leave').val(_this.find('.remaining_leave').text());
             $('#e_date_from').val(_this.find('.date_from').text());
             $('#e_date_to').val(_this.find('.date_to').text());
             $('#e_number_of_day').val(_this.find('.number_of_day').text());
             $('#e_reason').val(_this.find('.reason').text());
-
-            // Function to create HTML for leave dates and leave days and append to respective elements
+    
+            // Function to create HTML for leave dates and leave days
             function appendLeaveData(targetSelectorDate, targetSelectorDay, leaveDateArray, leaveDayArray) {
                 let htmlDateContent = '';
                 let htmlDayContent = '';
-                let count = 1; // Counter to keep track of leave days
-
+                let count = 1;
+    
                 // Loop through both arrays simultaneously
                 for (let i = 0; i < leaveDateArray.length; i++) {
                     const leaveDate = leaveDateArray[i];
                     const leaveDay = leaveDayArray[i];
-
+    
                     // For Leave Dates
                     htmlDateContent += `
                         <div class="form-group">
@@ -567,7 +568,7 @@
                             </div>
                         </div>
                     `;
-
+    
                     // For Leave Days (Select Dropdown)
                     htmlDayContent += `
                         <div class="form-group">
@@ -583,26 +584,183 @@
                         </div>
                     `;
                     
-                    count++; // Increment counter after each iteration
+                    count++;
                 }
-
+    
                 // Append generated HTML to target elements
                 $(targetSelectorDate).html(htmlDateContent);
                 $(targetSelectorDay).html(htmlDayContent);
             }
-
+    
             // Example of parsing JSON strings (if you already have the text in JSON format)
             var leaveDateJson = _this.find('.leave_date').text();
             var leaveDayJson = _this.find('.leave_day').text();
-
+    
             var leaveDateArray = JSON.parse(leaveDateJson); // Parse to array
             var leaveDayArray = JSON.parse(leaveDayJson);   // Parse to array
-
-            // Append the data to the respective sections (for leave dates and leave days)
+    
+            // Clear previous displays before appending new ones
+            $('#e_leave_dates_display').empty();
+            $('#e_select_leave_day').empty();
+    
+            // Append the data to the respective sections
             appendLeaveData('#e_leave_dates_display', '#e_select_leave_day', leaveDateArray, leaveDayArray);
-
+    
+            // Define the URL for the AJAX request
+            var url = "{{ route('hr/get/information/leave') }}";
+    
+            // Function to handle leave type change
+            function editHandleLeaveTypeChange() {
+                var leaveType = $('#e_leave_type').val();
+                
+                // Clear other fields when leave type changes
+                $('#e_remaining_leave').val('');
+                $('#e_number_of_day').val('');
+                $('#e_leave_dates_display').empty();
+                $('#e_select_leave_day').empty();
+                $('#e_reason').val('');
+                
+                var numberOfDay = $('#e_number_of_day').val();    
+                $.post(url, {
+                    leave_type: leaveType,
+                    number_of_day: numberOfDay,
+                    _token: $('meta[name="csrf-token"]').attr('content')
+                }, function(data) {
+                    if (data.response_code == 200) {
+                        $('#e_remaining_leave').val(data.leave_type);
+                    }
+                }, 'json');
+            }
+    
+            // Function to count leave days based on the selected date range
+            function editCountLeaveDays() {
+                var dateFrom = new Date($('#e_date_from').val());
+                var dateTo   = new Date($('#e_date_to').val());
+                var leaveDay = $('#e_leave_day').val();
+                
+                if (!isNaN(dateFrom) && !isNaN(dateTo)) {
+                    var numDays = Math.ceil((dateTo - dateFrom) / (1000 * 3600 * 24)) + 1;
+                    if (leaveDay.includes('Half-Day')) numDays -= 0.5;
+                    $('#e_number_of_day').val(numDays);
+                    editUpdateRemainingLeave(numDays);
+    
+                    // Clear previous display
+                    $('#e_leave_dates_display').empty();
+                    $('#e_select_leave_day').empty();
+    
+                    // Display each date one by one if numDays > 0
+                    if (numDays > 0) {
+                        for (let d = 0; d < numDays; d++) {
+                            let currentDate = new Date(dateFrom);
+                            currentDate.setDate(currentDate.getDate() + d);
+                            var formattedDate = currentDate.getDate() + ' ' + (currentDate.getMonth() + 1) + ',' + currentDate.getFullYear();
+    
+                            document.getElementById('e_leave_day_select').style.display = 'block'; // or 'flex', depending on your layout
+    
+                            // Append each leave date to the display
+                            if (numDays > 0) {
+                                document.getElementById('e_leave_dates_display').style.display = 'block';
+                                document.getElementById('e_select_leave_day').style.display = 'block';
+    
+                                const inputDate = formattedDate;
+                                let [day, month, year] = inputDate.split(/[\s,]+/);
+                                let date = new Date(year, month - 1, day - 1);
+                                let formattedDateConvert = currentDate.getDate() + ' ' + currentDate.toLocaleString('en-GB', { month: 'short' }) + ', ' + currentDate.getFullYear();
+    
+                                // Create unique IDs for inputs and labels
+                                let leaveDateInputId = `e_leave_date_${d}`;
+    
+                                // Append each leave date to the display
+                                $('#leave_dates_display').append(`
+                                    <div class="form-group">
+                                        <label><span class="text-danger">Leave Date ${d+1}</span></label>
+                                        <div class="cal-icon">
+                                            <input type="text" class="form-control" id="e_${leaveDateInputId}" name="leave_date[]" value="${formattedDateConvert}" readonly>
+                                        </div>
+                                    </div>
+                                `);
+                                
+                                // Function to generate leave day select elements
+                                function editGenerateLeaveDaySelects(numDays) {
+                                    $('#e_select_leave_day').empty(); // Clear existing elements
+                                    for (let d = 0; d < numDays; d++) {
+                                        let leaveDayId = `e_leave_day_${d}`;
+                                        document.getElementById('e_leave_day_select').style.display = 'none'; 
+                                        $('#select_leave_day').append(`
+                                            <div class="form-group">
+                                                <label><span class="text-danger">Leave Day ${d+1}</span></label>
+                                                <select class="select" name="select_leave_day[]" id="e_${leaveDayId}">
+                                                    <option value="Full-Day Leave">Full-Day Leave</option>
+                                                    <option value="Half-Day Morning Leave">Half-Day Morning Leave</option>
+                                                    <option value="Half-Day Afternoon Leave">Half-Day Afternoon Leave</option>
+                                                    <option value="Public Holiday">Public Holiday</option>
+                                                    <option value="Off Schedule">Off Schedule</option>
+                                                </select>
+                                            </div>
+                                        `);
+                                    }
+                                }
+    
+                                // Call this function when you need to set up the dropdowns
+                                editGenerateLeaveDaySelects(numDays);
+    
+                                // Function to update total leave days and remaining leave
+                                function editUpdateLeaveDaysAndRemaining() {
+                                    let totalDays = numDays; // Start with the total number of days
+                                    for (let d = 0; d < numDays; d++) {
+                                        let leaveType = $(`#e_leave_day_${d}`).val(); // Get the selected leave type
+                                        if (leaveType && leaveType.includes('Half-Day')) totalDays -= 0.5;
+                                    }
+                                    $('#e_number_of_day').val(totalDays);
+                                    // Update remaining leave
+                                    editUpdateRemainingLeave(totalDays);
+                                }
+    
+                                // Event listener for leave day selection change
+                                $(document).on('change', '[id^="e_leave_day"]', editUpdateLeaveDaysAndRemaining);
+    
+                                // Initial setup
+                                editUpdateLeaveDaysAndRemaining();
+                            } else {
+                                $('#e_leave_dates_display').hide();
+                                $('#e_select_leave_day').hide();
+                            }
+                        }
+                        
+                    }
+                } else {
+                    $('#e_number_of_day').val('0');
+                    $('#e_leave_dates_display').text(''); // Clear the display in case of invalid dates
+                    $('#e_select_leave_day').text(''); // Clear the display in case of invalid dates
+                }
+            }
+                
+            // Function to update remaining leave
+            function editUpdateRemainingLeave(numDays) {
+                $.post(url, {
+                    number_of_day: numDays,
+                    leave_type: $('#e_leave_type').val(),
+                    _token: $('meta[name="csrf-token"]').attr('content')
+                }, function(data) {
+                    if (data.response_code == 200) {
+                        $('#e_remaining_leave').val(data.leave_type);
+                        $('#e_apply_leave').prop('disabled', data.leave_type < 0);
+    
+                        // Show the alert only once if leave type is less than 0
+                        if (data.leave_type < 0 && !$('#e_apply_leave').data('alerted')) {
+                            toastr.info('You cannot apply for leave at this time.');
+                            $('#e_apply_leave').data('alerted', true);
+                        }
+                    }
+                }, 'json');
+            }
+            
+            // Event listeners
+            $('#e_leave_type').on('change', editHandleLeaveTypeChange);
+            $('#e_date_from, #e_date_to, #e_leave_day').on('dp.change', editCountLeaveDays);
         });
     </script>
+    
         
 @endsection
 @endsection
