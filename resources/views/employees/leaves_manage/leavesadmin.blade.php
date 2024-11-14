@@ -226,56 +226,7 @@
         <!-- /Add Leave Modal -->
 				
         <!-- Edit Leave Modal -->
-        <div id="edit_leave" class="modal custom-modal fade" role="dialog">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Edit Leave</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <form action="{{ route('form/leaves/edit') }}" method="POST">
-                            @csrf
-                            <input type="hidden" id="e_id" name="id" value="">
-                            <div class="form-group">
-                                <label>Leave Type <span class="text-danger">*</span></label>
-                                <select class="select" id="e_leave_type" name="leave_type">
-                                    <option selected disabled>Select Leave Type</option>
-                                    <option value="Casual Leave 12 Days">Casual Leave 12 Days</option>
-                                    <option value="Medical Leave">Medical Leave</option>
-                                    <option value="Loss of Pay">Loss of Pay</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>From <span class="text-danger">*</span></label>
-                                <div class="cal-icon">
-                                    <input type="text" class="form-control datetimepicker" id="e_from_date" name="from_date" value="">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label>To <span class="text-danger">*</span></label>
-                                <div class="cal-icon">
-                                    <input type="text" class="form-control datetimepicker" id="e_to_date" name="to_date" value="">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label>Number of days <span class="text-danger">*</span></label>
-                                <input class="form-control" readonly type="text" id="e_number_of_days" name="number_of_days" value="">
-                            </div>
-                            <div class="form-group">
-                                <label>Leave Reason <span class="text-danger">*</span></label>
-                                <textarea rows="4" class="form-control" id="e_leave_reason" name="leave_reason" value=""></textarea>
-                            </div>
-                            <div class="submit-section">
-                                <button type="submit" class="btn btn-primary submit-btn">Save</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
+       
         <!-- /Edit Leave Modal -->
 
         <!-- Approve Leave Modal -->
