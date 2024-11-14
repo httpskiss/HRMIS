@@ -10,7 +10,18 @@ use Session;
 class Leave extends Model
 {
     use HasFactory;
-    protected $table = 'leaves'; // Specify the table name if it's not pluralized
+    protected $fillable = [
+        'employee_name',
+        'leave_type',
+        'remaining_leave',
+        'date_from',
+        'date_to',
+        'number_of_day',
+        'leave_date',
+        'status',
+        'reason',
+        'approved_by',
+    ];
 
     /** Save Record Leave */
     public function applyLeave(Request $request)
@@ -21,23 +32,26 @@ class Leave extends Model
             'date_to'    => 'required',
             'reason'     => 'required',
         ]);
-  
+
         try {
-            
-            $save = new Leave;
-            $save->staff_id        = Session::get('user_id');
-            $save->employee_name   = Session::get('name');
-            $save->leave_type      = $request->leave_type;
-            $save->remaining_leave = $request->remaining_leave;
-            $save->date_from       = $request->date_from;
-            $save->date_to         = $request->date_to;
-            $save->number_of_day   = $request->number_of_day;
-            $save->leave_date      = json_encode($request->leave_date);
-            $save->leave_day       = json_encode($request->select_leave_day);
-            $save->status          = 'Pending';
-            $save->reason          = $request->reason;
-            $save->approved_by     = Session::get('line_manager');
-            $save->save();
+            Leave::updateOrCreate(
+                [
+                    'id' => $request->id_record, // Unique attribute(s) to check for existing record
+                ],
+                [
+                    'employee_name'   => Session::get('name'),
+                    'leave_type'      => $request->leave_type,
+                    'remaining_leave' => $request->remaining_leave,
+                    'date_from'       => $request->date_from,
+                    'date_to'         => $request->date_to,
+                    'number_of_day'   => $request->number_of_day,
+                    'leave_date'      => json_encode($request->leave_date),
+                    'leave_day'       => json_encode($request->select_leave_day),
+                    'status'          => 'Pending',
+                    'reason'          => $request->reason,
+                    'approved_by'     => Session::get('line_manager'),
+                ]
+            );
     
             flash()->success('Apply Leave successfully :)');
             return redirect()->back();

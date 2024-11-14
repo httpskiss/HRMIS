@@ -59,6 +59,7 @@
                             <thead>
                                 <tr>
                                     <th>No</th>
+                                    <th hidden>ID</th>
                                     <th>Leave Type</th>
                                     <th hidden>Remaining Leaves</th>
                                     <th>From</th>
@@ -80,6 +81,7 @@
                                     @endphp
                                     <tr>
                                         <td>{{ ++$key}}</td>
+                                        <td hidden class="id_record">{{ $leave->id }}</td>
                                         <td class="leave_type">{{ $leave->leave_type }}</td>
                                         <td hidden class="remaining_leave">{{ $leave->remaining_leave }}</td>
                                         <td class="date_from">{{ $leave->date_from }}</td>
@@ -136,7 +138,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form id="applyLeave" action="{{ route('form/leaves/save') }}" method="POST">
+                        <form class="applyLeave" action="{{ route('form/leaves/save') }}" method="POST">
                             @csrf
                             <div class="row">
                                 <div class="col-md-6">
@@ -227,12 +229,14 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form>
+                        <form action="{{ route('form/leaves/save') }}" method="POST">
+                            @csrf
+                            <input type="hidden" class="form-control" id="e_id_record" name="id_record" readonly>
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Leave Type <span class="text-danger">*</span></label>
-                                        <select class="select" id="e_leave_type">
+                                        <select class="select" id="e_leave_type" name="leave_type">
                                             @foreach($leaveInformation as $key => $leaves)
                                                 @if($leaves->leave_type != 'Total Leave Balance' && $leaves->leave_type != 'Use Leave' && $leaves->leave_type != 'Remaining Leave')   
                                                     <option value="{{ $leaves->leave_type }}">{{ $leaves->leave_type }}</option>
@@ -278,10 +282,10 @@
                             </div>
                             <div class="form-group">
                                 <label>Leave Reason <span class="text-danger">*</span></label>
-                                <textarea rows="2" class="form-control" id="e_reason"></textarea>
+                                <textarea rows="2" class="form-control" id="e_reason" name="reason"></textarea>
                             </div>
                             <div class="submit-section">
-                                <button class="btn btn-primary submit-btn" id="e_apply_leave">Save</button>
+                                <button type="submit" class="btn btn-primary submit-btn" id="e_apply_leave">Save</button>
                             </div>
                         </form>
                     </div>
@@ -455,7 +459,7 @@
                     if (data.leave_type < 0 && !$('#apply_leave').data('alerted')) {
                         toastr.info('You cannot apply for leave at this time.');
                         $('#apply_leave').data('alerted', true);
-                    } else if (numDays < 1) {
+                    } else if (numDays < 0.5) {
                         $('#apply_leave').prop('disabled', true);
                     }
                 }
@@ -486,7 +490,7 @@
     <!-- Validate Form  -->
     <script>
         $(document).ready(function() {
-            $("#applyLeave").validate({
+            $(".applyLeave").validate({
                 rules: {
                     leave_type: {
                         required: true,
@@ -541,6 +545,7 @@
             var _this = $(this).parents('tr');
             
             // Populate existing data into form fields
+            $('#e_id_record').val(_this.find('.id_record').text());
             $('#e_leave_type').val(_this.find('.leave_type').text()).change();
             $('#e_remaining_leave').val(_this.find('.remaining_leave').text());
             $('#e_date_from').val(_this.find('.date_from').text());
@@ -573,7 +578,7 @@
                     htmlDayContent += `
                         <div class="form-group">
                             <label><span class="text-danger">Leave Day ${count}</span></label>
-                            <select class="select" name="select_leave_day[]" id="leave_day_${i}">
+                            <select class="select" name="select_leave_day[]" id="e_leave_day_${i}">
                                 <option value="${leaveDay}" selected>${leaveDay}</option>
                                 <option value="Full-Day Leave">Full-Day Leave</option>
                                 <option value="Half-Day Morning Leave">Half-Day Morning Leave</option>
@@ -589,6 +594,25 @@
                 // Append generated HTML to target elements
                 $(targetSelectorDate).html(htmlDateContent);
                 $(targetSelectorDay).html(htmlDayContent);
+    
+                // Attach change event listener to newly created dropdowns to recalculate total days
+                $('select[name="select_leave_day[]"]').change(calculateTotalDays);
+            }
+    
+            // Function to calculate total days
+            function calculateTotalDays() {
+                let totalDays = $('#e_leave_dates_display .form-group').length; // Start with the total number of days
+    
+                // Adjust totalDays based on the selected leave types
+                $('select[name="select_leave_day[]"]').each(function() {
+                    const leaveType = $(this).val();
+                    if (leaveType && leaveType.includes('Half-Day')) {
+                        totalDays -= 0.5;
+                    }
+                });
+    
+                // Set the calculated total days back to the input
+                $('#e_number_of_day').val(totalDays);
             }
     
             // Example of parsing JSON strings (if you already have the text in JSON format)
@@ -604,9 +628,12 @@
     
             // Append the data to the respective sections
             appendLeaveData('#e_leave_dates_display', '#e_select_leave_day', leaveDateArray, leaveDayArray);
+    
+            // Initial calculation of total days
+            calculateTotalDays();
         });
     </script>
-
+    
     <!-- Edit Calculate Leave  -->
     <script>
         $(document).ready(function() {
@@ -618,7 +645,6 @@
     
             // Handle leave type change
             function handleLeaveTypeChange() {
-                resetFields();
                 $.post(url, {
                     leave_type: $('#e_leave_type').val(),
                     number_of_day: $('#e_number_of_day').val(),
@@ -642,15 +668,9 @@
                     generateLeaveDaySelections(numDays);
                 } else {
                     $('#e_number_of_day').val(0);
-                    $('#e_leave_dates_display').empty();
                 }
             }
-    
-            // Reset fields
-            function resetFields() {
-                $('#e_remaining_leave, #e_number_of_day, #e_date_from, #e_date_to, #e_leave_dates_display, #e_select_leave_day, #e_reason').val('');
-            }
-    
+
             // Display leave dates
             function displayLeaveDates(dateFrom, numDays) {
                 $('#e_leave_dates_display').empty();
@@ -661,20 +681,21 @@
                     $('#e_leave_dates_display').append(`
                         <div class="form-group">
                             <label><span class="text-danger">Leave Date ${d + 1}</span></label>
-                            <input type="text" class="form-control" value="${formattedDate}" readonly>
+                            <input type="text" class="form-control" name="leave_date[]" value="${formattedDate}" readonly>
                         </div>
                     `);
                 }
             }
-    
+
             // Generate leave day selection dropdowns
             function generateLeaveDaySelections(numDays) {
                 $('#e_select_leave_day').empty();
                 for (let d = 0; d < numDays; d++) {
+                    const leaveDayId = `e_leave_day_${d}`;
                     $('#e_select_leave_day').append(`
                         <div class="form-group">
                             <label><span class="text-danger">Leave Day ${d + 1}</span></label>
-                            <select class="select" name="select_leave_day[]">
+                            <select class="select" name="select_leave_day[]" id="${leaveDayId}">
                                 <option value="Full-Day Leave">Full-Day Leave</option>
                                 <option value="Half-Day Morning Leave">Half-Day Morning Leave</option>
                                 <option value="Half-Day Afternoon Leave">Half-Day Afternoon Leave</option>
@@ -684,8 +705,24 @@
                         </div>
                     `);
                 }
+
+                // Recalculate totalDays whenever a dropdown changes
+                $('#e_select_leave_day').on('change', '.select', function () {
+                    let totalDays = numDays;
+
+                    // Loop to adjust totalDays based on "Half-Day" selections
+                    for (let d = 0; d < numDays; d++) {
+                        const leaveType = $(`#e_leave_day_${d}`).val();
+                        if (leaveType && leaveType.includes('Half-Day')) {
+                            totalDays -= 0.5;
+                        }
+                    }
+                    // Update display and remaining leave
+                    $('#e_number_of_day').val(totalDays);
+                    updateRemainingLeave(totalDays);
+                });
             }
-    
+
             // Update remaining leave
             function updateRemainingLeave(numDays) {
                 $.post(url, {
@@ -700,7 +737,7 @@
                         if (data.leave_type < 0 && !$('#e_apply_leave').data('alerted')) {
                             toastr.info('You cannot apply for leave at this time.');
                             $('#e_apply_leave').data('alerted', true);
-                        } else if (numDays < 1) {
+                        } else if (numDays < 0.5) {
                             $('#e_apply_leave').prop('disabled', true);
                         }
                     }

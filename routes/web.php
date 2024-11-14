@@ -205,7 +205,6 @@ Route::group(['namespace' => 'App\Http\Controllers'],function()
                 Route::get('/new', 'leavesAdmin')->name('form/leaves/new');
                 Route::post('/save', 'saveRecordLeave')->name('form/leaves/save');
                 Route::get('/employee/new', 'leavesEmployee')->name('form/leaves/employee/new');
-                Route::post('/edit', 'editRecordLeave')->name('form/leaves/edit');
                 Route::post('/edit/delete','deleteLeave')->name('form/leaves/edit/delete');
             });
             // --------------------- Form Attendance  -------------------------//

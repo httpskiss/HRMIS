@@ -60,47 +60,6 @@ class LeavesController extends Controller
         return $leave->applyLeave($request);
     }
 
-    /** Edit Leave */
-    public function editLeave($staff_id)
-    {
-        $leaveInformation = LeaveInformation::all();
-        $leaveDetail = Leave::where('staff_id', $staff_id)->first();
-        $leaveDate   = json_decode($leaveDetail->leave_date, true); // Decode JSON to array
-        $leaveDay    = json_decode($leaveDetail->leave_day, true); // Decode JSON to array
-        return view('employees.leaves_manage.leavesemployee',compact('leaveInformation','leaveDetail','leaveDate','leaveDay'));
-    }
-
-    /** Edit Record */
-    public function editRecordLeave(Request $request)
-    {
-        DB::beginTransaction();
-        try {
-
-            $from_date = new DateTime($request->from_date);
-            $to_date   = new DateTime($request->to_date);
-            $day       = $from_date->diff($to_date);
-            $days      = $day->d;
-
-            $update = [
-                'id'           => $request->id,
-                'leave_type'   => $request->leave_type,
-                'from_date'    => $request->from_date,
-                'to_date'      => $request->to_date,
-                'day'          => $days,
-                'leave_reason' => $request->leave_reason,
-            ];
-
-            LeavesAdmin::where('id',$request->id)->update($update);
-            DB::commit();
-            flash()->success('Updated Leaves successfully :)');
-            return redirect()->back();
-        } catch(\Exception $e) {
-            DB::rollback();
-            flash()->error('Update Leaves fail :)');
-            return redirect()->back();
-        }
-    }
-
     /** Delete Record */
     public function deleteLeave(Request $request)
     {
