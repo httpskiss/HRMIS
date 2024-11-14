@@ -52,12 +52,12 @@ class LeavesController extends Controller
     }
 
     /** Apply Leave */
-    public function saveRecord(Request $request)
+    public function saveRecordLeave(Request $request)
     {
         // Create an instance of the Leave model
         $leave = new Leave();
         // Call the applyLeave method
-        return $leave->saveRecord($request);
+        return $leave->applyLeave($request);
     }
 
     /** Delete Record */
