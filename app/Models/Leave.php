@@ -23,7 +23,7 @@ class Leave extends Model
         'approved_by',
     ];
 
-    /** Save Record Leave */
+    /** Save Record Leave or Update */
     public function applyLeave(Request $request)
     {
         $request->validate([
@@ -58,6 +58,19 @@ class Leave extends Model
         } catch (\Exception $e) {
             \Log::error($e); // Log the error
             flash()->error('Failed Apply Leave :)');
+            return redirect()->back();
+        }
+    }
+
+    /** Delete Record */
+    public function deleteRecord(Request $request) {
+        try {
+            Leave::destroy($request->id_record);
+            flash()->success('Leaves deleted successfully :)');
+            return redirect()->back();
+        } catch(\Exception $e) {
+            DB::rollback();
+            flash()->error('Leaves delete fail :)');
             return redirect()->back();
         }
     }

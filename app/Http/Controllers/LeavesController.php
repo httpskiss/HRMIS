@@ -52,26 +52,21 @@ class LeavesController extends Controller
     }
 
     /** Apply Leave */
-    public function saveRecordLeave(Request $request)
+    public function saveRecord(Request $request)
     {
         // Create an instance of the Leave model
         $leave = new Leave();
         // Call the applyLeave method
-        return $leave->applyLeave($request);
+        return $leave->saveRecord($request);
     }
 
     /** Delete Record */
     public function deleteLeave(Request $request)
     {
-        try {
-            LeavesAdmin::destroy($request->id);
-            flash()->success('Leaves admin deleted successfully :)');
-            return redirect()->back();
-        } catch(\Exception $e) {
-            DB::rollback();
-            flash()->error('Leaves admin delete fail :)');
-            return redirect()->back();
-        }
+        // Delete an instance of the Leave model
+        $delete = new Leave();
+        // Call the delete method
+        return $delete->deleteRecord($request);
     }
 
     /** Leave Settings Page */

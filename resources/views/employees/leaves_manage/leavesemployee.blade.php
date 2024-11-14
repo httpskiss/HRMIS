@@ -51,7 +51,7 @@
                 @endforeach
             </div>
             <!-- /Leave Statistics -->
-            
+
             <div class="row">
                 <div class="col-md-12">
                     <div class="table-responsive">
@@ -112,8 +112,8 @@
                                             <div class="dropdown dropdown-action">
                                                 <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="material-icons">more_vert</i></a>
                                                 <div class="dropdown-menu dropdown-menu-right">
-                                                    <a class="dropdown-item edit_eave" href="#" data-toggle="modal" data-target="#edit_leave"><i class="fa fa-pencil m-r-5"></i> Edit</a>
-                                                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#delete_approve"><i class="fa fa-trash-o m-r-5"></i> Delete</a>
+                                                    <a class="dropdown-item edit_leave" href="#" data-toggle="modal" data-target="#edit_leave"><i class="fa fa-pencil m-r-5"></i> Edit</a>
+                                                    <a class="dropdown-item delete_leave" href="#" data-toggle="modal" data-target="#delete_approve"><i class="fa fa-trash-o m-r-5"></i> Delete</a>
                                                 </div>
                                             </div>
                                         </td>
@@ -304,14 +304,18 @@
                             <p>Are you sure want to Cancel this leave?</p>
                         </div>
                         <div class="modal-btn delete-action">
-                            <div class="row">
-                                <div class="col-6">
-                                    <a href="javascript:void(0);" class="btn btn-primary continue-btn">Delete</a>
+                            <form action="{{ route('form/leaves/edit/delete') }}" method="POST">
+                                @csrf
+                                <input type="hidden" class="form-control" id="d_id_record" name="id_record" readonly>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <button type="submit" class="btn btn-primary continue-btn submit-btn">Delete</button>
+                                    </div>
+                                    <div class="col-6">
+                                        <a href="javascript:void(0);" data-dismiss="modal" class="btn btn-primary cancel-btn">Cancel</a>
+                                    </div>
                                 </div>
-                                <div class="col-6">
-                                    <a href="javascript:void(0);" data-dismiss="modal" class="btn btn-primary cancel-btn">Cancel</a>
-                                </div>
-                            </div>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -541,7 +545,7 @@
 
     <!-- Edit Leave  -->
     <script>
-        $(document).on('click', '.edit_eave', function() {
+        $(document).on('click', '.edit_leave', function() {
             var _this = $(this).parents('tr');
             
             // Populate existing data into form fields
@@ -744,6 +748,15 @@
 
                 }, 'json');
             }
+        });
+    </script>
+
+    <!-- Delete Leave  -->
+    <script>
+        $(document).on('click', '.delete_leave', function() {
+            var _this = $(this).parents('tr');
+            // Populate existing data into form fields
+            $('#d_id_record').val(_this.find('.id_record').text());
         });
     </script>
        
