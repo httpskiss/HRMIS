@@ -60,8 +60,10 @@ Route::group(['namespace' => 'App\Http\Controllers'],function()
 {
     // ------------------------- Main Dashboard ----------------------------//
     Route::controller(HomeController::class)->group(function () {
-        Route::get('/home', 'index')->name('home');
-        Route::get('em/dashboard', 'emDashboard')->name('em/dashboard');
+        Route::middleware('auth')->group(function () {
+            Route::get('/home', 'index')->name('home');
+            Route::get('em/dashboard', 'emDashboard')->name('em/dashboard');
+        });
     });
 
     // --------------------------- Lock Screen ----------------------------//

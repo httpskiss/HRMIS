@@ -11,6 +11,7 @@ class Leave extends Model
 {
     use HasFactory;
     protected $fillable = [
+        'staff_id',
         'employee_name',
         'leave_type',
         'remaining_leave',
@@ -39,6 +40,7 @@ class Leave extends Model
                     'id' => $request->id_record, // Unique attribute(s) to check for existing record
                 ],
                 [
+                    'staff_id'        => Session::get('user_id'),
                     'employee_name'   => Session::get('name'),
                     'leave_type'      => $request->leave_type,
                     'remaining_leave' => $request->remaining_leave,
