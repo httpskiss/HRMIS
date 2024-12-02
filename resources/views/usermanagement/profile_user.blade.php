@@ -38,7 +38,7 @@
                                                 <small class="text-muted">{{ Session::get('position') }}</small>
                                                 <div class="staff-id">User ID : {{ Session::get('user_id') }}</div>
                                                 <div class="small doj text-muted">Date of Join : {{ Session::get('join_date') }}</div>
-                                                <div class="staff-msg"><a class="btn btn-custom" href="chat.html">Send Message</a></div>
+                                                <div class="staff-msg"><a class="btn btn-custom" href="{{ route('chat') }}">Send Message</a></div>
                                             </div>
                                         </div>
                                         <div class="col-md-7">

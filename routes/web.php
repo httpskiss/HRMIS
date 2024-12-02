@@ -320,4 +320,11 @@ Route::group(['namespace' => 'App\Http\Controllers'],function()
             Route::post('bank/information/save', 'saveRecord')->name('bank/information/save');
         });
     });
+
+     // ---------------------- Chat -----------------------//
+     Route::controller(ChatController::class)->group(function () {
+        Route::middleware('auth')->group(function () {
+            Route::get('chat', 'chat')->name('chat');
+        });
+    });
 });
