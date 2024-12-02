@@ -36,13 +36,21 @@ class Leave extends Model
         ]);
 
         try {
+            if (!empty($request->employee_name)) {
+                $employee_name = $request->employee_name;
+                $employee_id   = $request->employee_id;
+            } else {
+                $employee_name = Session::get('name');
+                $employee_id   = Session::get('user_id');
+            }
+
             Leave::updateOrCreate(
                 [
                     'id' => $request->id_record, // Unique attribute(s) to check for existing record
                 ],
                 [
-                    'staff_id'        => Session::get('user_id'),
-                    'employee_name'   => Session::get('name'),
+                    'staff_id'        => $employee_id,
+                    'employee_name'   => $employee_name,
                     'leave_type'      => $request->leave_type,
                     'remaining_leave' => $request->remaining_leave,
                     'date_from'       => $request->date_from,

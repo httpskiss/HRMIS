@@ -15,8 +15,9 @@ class LeavesController extends Controller
     /** Leaves Admin Page */
     public function leavesAdmin()
     {
-        $leaves = DB::table('leaves_admins')->join('users', 'users.user_id','leaves_admins.user_id')->select('leaves_admins.*', 'users.position','users.name','users.avatar')->get();
-        return view('employees.leaves_manage.leavesadmin',compact('leaves'));
+        $userList = DB::table('users')->get();
+        $leaveInformation = LeaveInformation::all();
+        return view('employees.leaves_manage.leavesadmin',compact('leaveInformation','userList'));
     }
 
     /** Get Information Leave */
