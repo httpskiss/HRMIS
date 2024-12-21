@@ -17,7 +17,8 @@ class LeavesController extends Controller
     {
         $userList = DB::table('users')->get();
         $leaveInformation = LeaveInformation::all();
-        return view('employees.leaves_manage.leavesadmin',compact('leaveInformation','userList'));
+        $getLeave = Leave::all();
+        return view('employees.leaves_manage.leavesadmin',compact('leaveInformation','userList','getLeave'));
     }
 
     /** Get Information Leave */

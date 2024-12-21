@@ -30,8 +30,9 @@
                         <table class="table table-striped custom-table mb-0 datatable">
                             <thead>
                                 <tr>
-                                    <th style="width: 30px;">#</th>
+                                    <th style="width: 30px;">No</th>
                                     <th>Department Name</th>
+                                    <th hidden></th>
                                     <th class="text-right">Action</th>
                                 </tr>
                             </thead>
@@ -152,22 +153,22 @@
 
     <!-- /Page Wrapper -->
     @section('script')
-    {{-- update js --}}
-    <script>
-        $(document).on('click','.edit_department',function()
-        {
-            var _this = $(this).parents('tr');
-            $('#e_id').val(_this.find('.id').text());
-            $('#department_edit').val(_this.find('.department').text());
-        });
-    </script>
-    {{-- delete model --}}
-    <script>
-        $(document).on('click','.delete_department',function()
-        {
-            var _this = $(this).parents('tr');
-            $('.e_id').val(_this.find('.id').text());
-        });
-    </script>
+        {{-- update js --}}
+        <script>
+            $(document).on('click','.edit_department',function()
+            {
+                var _this = $(this).parents('tr');
+                $('#e_id').val(_this.find('.id').text());
+                $('#department_edit').val(_this.find('.department').text());
+            });
+        </script>
+        {{-- delete model --}}
+        <script>
+            $(document).on('click','.delete_department',function()
+            {
+                var _this = $(this).parents('tr');
+                $('.e_id').val(_this.find('.id').text());
+            });
+        </script>
     @endsection
 @endsection

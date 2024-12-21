@@ -136,14 +136,21 @@
                             </thead>
 
                             <tbody>
-                                @if(!empty($leaves))
-                                    @foreach ($leaves as $items )  
+                                @if(!empty($getLeave))
+                                    @foreach ($getLeave as $items )
+                                        @php // get photo from the table users
+                                            $profiles  = DB::table('users')->where('name', $items->employee_name)->get();
+                                        @endphp
                                         <tr>
                                             <td>
-                                                <h2 class="table-avatar">
-                                                    <a href="{{ url('employee/profile/'.$items->user_id) }}" class="avatar"><img alt="" src="{{ URL::to('/assets/images/'. $items->avatar) }}" alt="{{ $items->name }}"></a>
-                                                    <a href="#">{{ $items->name }}<span>{{ $items->position }}</span></a>
-                                                </h2>
+                                                @foreach($profiles as $key => $profile)
+                                                    <h2 class="table-avatar">
+                                                        <a href="#" class="avatar">
+                                                            <img src="{{ URL::to('/assets/images/'.$profile->avatar) }}" alt="">
+                                                        </a>
+                                                        <a href="#">{{ $items->employee_name }}<span>{{ $profile->position }}</span></a>
+                                                    </h2>
+                                                @endforeach
                                             </td>
                                             <td hidden class="id">{{ $items->id }}</td>
                                             <td class="leave_type">{{$items->leave_type}}</td>
@@ -152,7 +159,7 @@
                                             <td hidden class="to_date">{{$items->to_date}}</td>
                                             <td>{{date('d F, Y',strtotime($items->to_date)) }}</td>
                                             <td class="no_of_day">{{$items->no_of_day}} Day</td>
-                                            <td class="leave_reason">{{$items->leave_reason}}</td>
+                                            <td class="leave_reason">{{$items->reason}}</td>
                                             <td class="text-center">
                                                 <div class="dropdown action-label">
                                                     <a class="btn btn-white btn-sm btn-rounded dropdown-toggle" href="#" data-toggle="dropdown" aria-expanded="false">
