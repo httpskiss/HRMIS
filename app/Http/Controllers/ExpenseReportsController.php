@@ -46,4 +46,10 @@ class ExpenseReportsController extends Controller
     {
         return view('reports.employee-reports');
     }
+
+    /** Payslip Reports */
+    public function payslipReports()
+    {
+        return view('reports.payslipreports');
+    }
 }

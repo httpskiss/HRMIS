@@ -243,6 +243,7 @@ Route::group(['namespace' => 'App\Http\Controllers'],function()
         Route::get('form/leave/reports/page','leaveReport')->middleware('auth')->name('form/leave/reports/page');
         Route::get('form/payments/reports/page','paymentsReportIndex')->middleware('auth')->name('form/payments/reports/page');
         Route::get('form/employee/reports/page','employeeReportsIndex')->middleware('auth')->name('form/employee/reports/page');
+        Route::get('form/payslip/reports/page','payslipReports')->middleware('auth')->name('form/payslip/reports/page');
     });
 
     // --------------------------- Performance  -------------------------//
