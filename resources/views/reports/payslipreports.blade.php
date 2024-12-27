@@ -25,7 +25,6 @@
                 <!-- Content Starts -->
                 <!-- Search Filter -->
             <div class="row filter-row">
-                
                 <div class="col-sm-6 col-md-3">  
                     <div class="form-group form-focus">
                         <input type="text" class="form-control floating">
@@ -80,7 +79,7 @@
                         <table class="table table-striped custom-table mb-0 datatable">
                             <thead>
                                 <tr>
-                                    <th>#</th>
+                                    <th>No</th>
                                     <th>Employee Name</th>
                                     <th>Paid Amount</th>
                                     <th>Payment Month</th>
@@ -159,12 +158,9 @@
                     </div>
                 </div>
             </div>
-        
             <!-- /Content End -->
-            
         </div>
         <!-- /Page Content -->
-        
     </div>
     <!-- /Page Wrapper -->
 @endsection

@@ -296,7 +296,7 @@
                         <div class="col-md-6 d-flex">
                             <div class="card profile-box flex-fill">
                                 <div class="card-body">
-                                    <h3 class="card-title">Bank information 
+                                    <h3 class="card-title">Bank information
                                         <a href="#" class="edit-icon" data-toggle="modal" data-target="#bank_information_modal">
                                             <i class="fa fa-pencil"></i>
                                         </a>
@@ -1354,19 +1354,19 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form action="{{ route('user/information/save') }}" method="POST">
+                        <form id="personalInfo" action="{{ route('user/information/save') }}" method="POST">
                             @csrf
                             <input type="hidden" class="form-control" name="user_id" value="{{ Session::get('user_id') }}" readonly>
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>Passport No</label>
+                                        <label>Passport No <span class="text-danger">*</span></label>
                                         <input type="text" class="form-control @error('passport_no') is-invalid @enderror" name="passport_no">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>Passport Expiry Date</label>
+                                        <label>Passport Expiry Date <span class="text-danger">*</span></label>
                                         <div class="cal-icon">
                                             <input class="form-control datetimepicker @error('passport_expiry_date') is-invalid @enderror" type="text" name="passport_expiry_date">
                                         </div>
@@ -1374,8 +1374,8 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>Tel</label>
-                                        <input class="form-control @error('tel') is-invalid @enderror" type="text" name="tel">
+                                        <label>Tel <span class="text-danger">*</span></label>
+                                        <input class="form-control @error('tel') is-invalid @enderror" type="number" name="tel">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -1386,7 +1386,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>Religion</label>
+                                        <label>Religion <span class="text-danger">*</span></label>
                                         <div class="form-group">
                                             <input class="form-control @error('religion') is-invalid @enderror" type="text" name="religion">
                                         </div>
@@ -1403,13 +1403,13 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>Employment of spouse</label>
+                                        <label>Employment of spouse <span class="text-danger">*</span></label>
                                         <input class="form-control @error('employment_of_spouse') is-invalid @enderror" type="text" name="employment_of_spouse">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>No. of children </label>
+                                        <label>No. of children <span class="text-danger">*</span></label>
                                         <input class="form-control @error('children') is-invalid @enderror" type="text" name="children">
                                     </div>
                                 </div>
@@ -1870,6 +1870,36 @@
     <!-- /Page Content -->
     </div>
     @section('script')
+        <!-- Personal Info -->
+        <script>
+            $('#personalInfo').validate({  
+                rules: {  
+                    passport_no: 'required',  
+                    passport_expiry_date: 'required',  
+                    tel: 'required',  
+                    nationality: 'required',  
+                    religion: 'required',  
+                    marital_status: 'required',  
+                    employment_of_spouse: 'required',  
+                    children: 'required',  
+                },  
+                messages: {
+                    passport_no: 'Please Input Passport No',    
+                    passport_expiry_date: 'Please Input Passport Expiry Date',    
+                    tel: 'Please Input Phone Number',     
+                    nationality: 'Please Input Nationality',    
+                    religion: 'Please Input Religion',    
+                    marital_status: 'Please Input Marital status',    
+                    employment_of_spouse: 'Please Input Employment of spouse',    
+                    children: 'Please Input No. of children',    
+                },  
+                submitHandler: function(form) {  
+                    form.submit();
+                }  
+            });  
+        </script>
+
+        <!-- Emergency Contact -->
         <script>
             $('#validation').validate({  
                 rules: {  
@@ -1897,5 +1927,6 @@
                 }  
             });  
         </script>
+        
     @endsection
 @endsection
