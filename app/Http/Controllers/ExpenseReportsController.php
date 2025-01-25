@@ -52,4 +52,10 @@ class ExpenseReportsController extends Controller
     {
         return view('reports.payslipreports');
     }
+
+    /** Attendance Reports */
+    public function attendanceReports()
+    {
+        return view('reports.attendance-reports');
+    }
 }
