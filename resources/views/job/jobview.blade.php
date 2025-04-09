@@ -9,7 +9,7 @@
             <!-- Logo -->
             <div class="header-left">
                 <a href="{{ route('home') }}" class="logo">
-                    <img src="{{ URL::to('assets/img/logo.png') }}" width="40" height="40" alt="">
+                    <img src="{{ URL::to('assets/img/bipsu_logo.png') }}" width="40" height="40" alt="">
                 </a>
             </div>
             <!-- /Logo -->

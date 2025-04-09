@@ -40,7 +40,7 @@
 				<!-- Logo -->
                 <div class="header-left">
                     <a href="{{ route('home') }}" class="logo">
-						<img src="{{ URL::to('assets/img/logo.png') }}" width="40" height="40" alt="">
+						<img src="{{ URL::to('assets/img/bipsu.png') }}" width="40" height="40" alt="">
 					</a>
                 </div>
 				<!-- /Logo -->
@@ -53,7 +53,7 @@
 				</a>
 				<!-- Header Title -->
                 <div class="page-title-box">
-					<h3>{{ Auth::user()->name }}</h3>
+					<h3>BiPSU</h3>
                 </div>
 				<!-- /Header Title -->
 				<a id="mobile_btn" class="mobile_btn" href="#sidebar"><i class="fa fa-bars"></i></a>

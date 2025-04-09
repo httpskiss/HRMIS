@@ -30,7 +30,7 @@
 				<!-- Logo -->
                 <div class="header-left">
                     <a href="index.html" class="logo">
-						<img src="assets/img/logo.png" width="40" height="40" alt="">
+						<img src="assets/img/bipsu_logo.png" width="40" height="40" alt="">
 					</a>
                 </div>
 				<!-- /Logo -->			
